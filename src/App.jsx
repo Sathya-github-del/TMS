@@ -506,7 +506,7 @@ export default function App() {
                   borderRadius: "4px",
                 }}
               />
-              <h1 style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: '#000', fontFamily: 'Montserrat, sans-serif' }}>EduAdmin</h1>
+              <h1 style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: '#000', fontFamily: 'Montserrat, sans-serif' }}>Admin</h1>
             </div>
           </div>
 
