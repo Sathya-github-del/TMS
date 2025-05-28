@@ -8,10 +8,8 @@ import IntegratedLMS from "./components/IntegratedLMS"
 import RecognitionDashboard from "./components/R&R"
 import AIInsightsDashboard from "./components/AI-PoweredInsights"
 import AdminLogin from "./components/AdminLogin"
-import DefaultAdminDashboard from "./components/DefaultAdminDashboard"
 import TeacherProfile from "./components/TeacherProfile"
 import TeacherLogin from "./components/TeacherLogin"
-import PublicDashboard from "./components/PublicDashboard"
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -42,8 +40,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<DefaultAdminDashboard />} />
-        <Route path="/login" element={<AdminLogin onLogin={handleLogin} />} />
+        <Route path="/" element={<AdminLogin onLogin={handleLogin} />} />
         <Route path="/teacher-login" element={<TeacherLogin />} />
 
         {/* Protected Admin Routes */}
