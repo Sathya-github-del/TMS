@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { 
+import {
   Home,
   Users,
   BarChart3,
@@ -9,7 +9,7 @@ import {
   Bell,
   ArrowRight,
   Menu,
-  X 
+  X
 } from 'lucide-react';
 
 // Pie Chart Component for Workload Distribution
@@ -342,7 +342,7 @@ const Avatar = ({ children, size = 40, fallback = "U" }) => {
 // Sidebar Component
 const Sidebar = ({ isOpen, onClose, isMobile = false, onNavigate }) => {
   const [activeItem, setActiveItem] = useState('dashboard')
-  
+
   const menuItems = [
     { icon: Home, label: "Dashboard", page: "dashboard" },
     { icon: Users, label: "Teacher Bandwidth Tracker", page: "bandwidth" },
@@ -563,15 +563,14 @@ export default function App({ onNavigate }) {
         {/* Mobile Sidebar */}
         {isMobile && sidebarOpen && (
           <div style={{ position: "fixed", inset: 0, zIndex: 50 }}>
-            <Sidebar 
-              isOpen={sidebarOpen} 
-              onClose={() => setSidebarOpen(false)} 
-              isMobile 
+            <Sidebar
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              isMobile
               onNavigate={onNavigate}
             />
           </div>
         )}
-
         {/* Main Content */}
         <main
           style={{

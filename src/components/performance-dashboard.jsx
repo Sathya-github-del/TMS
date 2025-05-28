@@ -4,6 +4,7 @@ import { useState } from "react"
 
 const PerformanceDashboard = ({ onNavigate }) => {
   const [activeNav, setActiveNav] = useState("Performance Dashboard")
+  const [expandedCard, setExpandedCard] = useState(null)
 
   const teacherData = [
     {
@@ -58,6 +59,136 @@ const PerformanceDashboard = ({ onNavigate }) => {
         lessonPlanQuality: "90/100",
       },
     },
+    {
+      id: 5,
+      name: "Ms. Sophie Wright",
+      rating: 4.9,
+      reviews: 145,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "94/100",
+        feedbackScore: "91/100",
+        peerReviews: "4.8/5",
+        lessonPlanQuality: "96/100",
+      },
+    },
+    {
+      id: 6,
+      name: "Mr. James Anderson",
+      rating: 4.7,
+      reviews: 98,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "89/100",
+        feedbackScore: "87/100",
+        peerReviews: "4.5/5",
+        lessonPlanQuality: "91/100",
+      },
+    },
+    {
+      id: 7,
+      name: "Dr. Emma Thompson",
+      rating: 4.8,
+      reviews: 156,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "93/100",
+        feedbackScore: "90/100",
+        peerReviews: "4.7/5",
+        lessonPlanQuality: "94/100",
+      },
+    },
+    {
+      id: 8,
+      name: "Mr. William Chen",
+      rating: 4.6,
+      reviews: 112,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "87/100",
+        feedbackScore: "85/100",
+        peerReviews: "4.4/5",
+        lessonPlanQuality: "89/100",
+      },
+    },
+    {
+      id: 9,
+      name: "Ms. Isabella Martinez",
+      rating: 4.9,
+      reviews: 134,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "95/100",
+        feedbackScore: "92/100",
+        peerReviews: "4.8/5",
+        lessonPlanQuality: "97/100",
+      },
+    },
+    {
+      id: 10,
+      name: "Mr. Daniel Kim",
+      rating: 4.7,
+      reviews: 108,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "88/100",
+        feedbackScore: "86/100",
+        peerReviews: "4.5/5",
+        lessonPlanQuality: "90/100",
+      },
+    },
+    {
+      id: 11,
+      name: "Ms. Rachel Green",
+      rating: 4.8,
+      reviews: 142,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "91/100",
+        feedbackScore: "89/100",
+        peerReviews: "4.6/5",
+        lessonPlanQuality: "93/100",
+      },
+    },
+    {
+      id: 12,
+      name: "Mr. Michael Scott",
+      rating: 4.5,
+      reviews: 95,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "86/100",
+        feedbackScore: "83/100",
+        peerReviews: "4.3/5",
+        lessonPlanQuality: "87/100",
+      },
+    },
+    {
+      id: 13,
+      name: "Dr. Sarah Johnson",
+      rating: 4.9,
+      reviews: 168,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "96/100",
+        feedbackScore: "93/100",
+        peerReviews: "4.9/5",
+        lessonPlanQuality: "98/100",
+      },
+    },
+    {
+      id: 14,
+      name: "Mr. David Wilson",
+      rating: 4.7,
+      reviews: 115,
+      image: "/placeholder.svg?height=120&width=120",
+      metrics: {
+        engagementScore: "90/100",
+        feedbackScore: "88/100",
+        peerReviews: "4.6/5",
+        lessonPlanQuality: "92/100",
+      },
+    },
   ]
 
   const sidebarItems = [
@@ -88,7 +219,9 @@ const PerformanceDashboard = ({ onNavigate }) => {
           borderRight: "1px solid #e2e8f0",
           padding: "0",
           flexShrink: 0,
-          display: "block",
+          position: "fixed",
+          height: "100vh",
+          overflowY: "auto",
         }}
       >
         {/* Sidebar Header */}
@@ -126,7 +259,6 @@ const PerformanceDashboard = ({ onNavigate }) => {
                 color: item.page === "performance" ? "#1d4ed8" : "#4b5563",
                 fontWeight: item.page === "performance" ? "500" : "400",
               }}
-              onClick={() => onNavigate(item.page)}
             >
               <span style={{ fontSize: "16px" }}>{item.icon}</span>
               <span style={{ fontSize: "14px" }}>{item.label}</span>
@@ -134,9 +266,8 @@ const PerformanceDashboard = ({ onNavigate }) => {
           ))}
         </nav>
       </div>
-
       {/* Main Content */}
-      <div style={{ flex: 1, overflow: "auto" }}>
+      <div style={{ flex: 1, marginLeft: "280px", overflow: "auto" }}>
         {/* Content Area */}
         <div style={{ padding: "32px" }}>
           {/* Header */}
@@ -176,11 +307,11 @@ const PerformanceDashboard = ({ onNavigate }) => {
             </h2>
           </div>
 
-          {/* Teacher Cards */}
+          {/* Teacher Cards Grid */}
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
               gap: "24px",
               marginBottom: "32px",
             }}
@@ -191,98 +322,64 @@ const PerformanceDashboard = ({ onNavigate }) => {
                 style={{
                   backgroundColor: "white",
                   borderRadius: "12px",
-                  padding: "24px",
+                  padding: "20px",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   border: "1px solid #f1f5f9",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  transform: expandedCard === teacher.id ? "scale(1.02)" : "scale(1)",
                 }}
+                onClick={() => setExpandedCard(expandedCard === teacher.id ? null : teacher.id)}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "24px",
-                    marginBottom: "20px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {/* Teacher Info */}
-                  <div style={{ flex: 1, minWidth: "200px" }}>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        color: "#6b7280",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      Overall Performance
-                    </div>
-                    <h3
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#1f2937",
-                        margin: "0 0 4px 0",
-                      }}
-                    >
-                      {teacher.name}
-                    </h3>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        color: "#3b82f6",
-                      }}
-                    >
-                      Overall Rating: {teacher.rating} • {teacher.reviews} Reviews
-                    </div>
-                  </div>
-
-                  {/* Teacher Photo */}
+                <div style={{ display: "flex", gap: "16px", marginBottom: expandedCard === teacher.id ? "16px" : "0" }}>
                   <div
                     style={{
-                      width: "120px",
-                      height: "120px",
-                      borderRadius: "12px",
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "8px",
                       backgroundColor: "#f3f4f6",
                       backgroundImage: `url(${teacher.image})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       flexShrink: 0,
                     }}
-                  ></div>
+                  />
+                  <div>
+                    <h3 style={{ margin: "0 0 4px 0", fontSize: "16px", fontWeight: "600" }}>
+                      {teacher.name}
+                    </h3>
+                    <div style={{ fontSize: "14px", color: "#3b82f6", marginBottom: "4px" }}>
+                      Rating: {teacher.rating}
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                      {teacher.reviews} Reviews
+                    </div>
+                  </div>
                 </div>
 
-                {/* Performance Metrics */}
+                {/* Expandable metrics section */}
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: "16px",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "8px",
+                    height: expandedCard === teacher.id ? "auto" : "0",
+                    overflow: "hidden",
+                    opacity: expandedCard === teacher.id ? 1 : 0,
+                    transition: "all 0.3s ease",
+                    marginTop: expandedCard === teacher.id ? "16px" : "0",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "14px", color: "#3b82f6" }}>Engagement Score</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                      {teacher.metrics.engagementScore}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "14px", color: "#3b82f6" }}>Feedback Score</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                      {teacher.metrics.feedbackScore}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "14px", color: "#3b82f6" }}>Peer Reviews</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                      {teacher.metrics.peerReviews}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "14px", color: "#3b82f6" }}>Lesson Plan Quality</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                      {teacher.metrics.lessonPlanQuality}
-                    </span>
-                  </div>
+                  {Object.entries(teacher.metrics).map(([key, value]) => (
+                    <div key={key} style={{ fontSize: "12px" }}>
+                      <span style={{ color: "#6b7280" }}>
+                        {key.replace(/([A-Z])/g, " $1").trim()}:
+                      </span>
+                      <span style={{ color: "#1f2937", marginLeft: "4px", fontWeight: "500" }}>
+                        {value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -320,48 +417,21 @@ const PerformanceDashboard = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Responsive Styles */}
+      {/* Update responsive styles */}
       <style>
         {`
           @media (max-width: 768px) {
             .sidebar {
-              position: fixed;
               left: -280px;
-              top: 0;
-              height: 100vh;
-              z-index: 1000;
-              transition: left 0.3s ease;
-            }
-            .sidebar.open {
-              left: 0;
             }
             .main-content {
               margin-left: 0;
-            }
-            .top-nav {
-              flex-direction: column;
-              gap: 16px;
-              align-items: flex-start;
-            }
-            .nav-items {
-              display: none;
-            }
-            .teacher-card {
-              flex-direction: column;
-            }
-            .teacher-photo {
-              width: 80px;
-              height: 80px;
-              align-self: center;
             }
           }
           
           @media (max-width: 480px) {
             .content-padding {
               padding: 16px;
-            }
-            .teacher-metrics {
-              grid-template-columns: 1fr;
             }
           }
         `}

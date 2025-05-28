@@ -265,7 +265,7 @@ const TeacherProfile = () => {
                   height: "80px",
                   borderRadius: "50%",
                   backgroundColor: "#f3f4f6",
-                  backgroundImage: "url(/placeholder.svg?height=80&width=80)",
+                  backgroundImage: "url('https://placehold.co/600x400')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   margin: "0 auto 16px auto",
@@ -459,7 +459,7 @@ const TeacherProfile = () => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    marginTop: "8px",
+                    marginTop: "-5px",
                     fontSize: "12px",
                     color: "#6b7280",
                   }}

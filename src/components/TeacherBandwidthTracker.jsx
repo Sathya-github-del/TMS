@@ -120,12 +120,12 @@ const TeacherDashboard = ({ onNavigate }) => {
         >
           <div
             style={{
-              width: "8px",
-              height: "8px",
+              width: "24px",
+              height: "24px",
               backgroundColor: "#1f2937",
-              transform: "rotate(45deg)",
+              borderRadius: "4px",
             }}
-          ></div>
+          />
           <span
             style={{
               fontWeight: "600",
@@ -133,7 +133,7 @@ const TeacherDashboard = ({ onNavigate }) => {
               color: "#1f2937",
             }}
           >
-           Admin
+            Admin
           </span>
         </div>
 
@@ -188,7 +188,6 @@ const TeacherDashboard = ({ onNavigate }) => {
               Manage and monitor teacher workload effectively to ensure balanced distribution and optimal performance.
             </p>
           </div>
-
           {/* Search and Filters */}
           <div
             style={{
