@@ -40,8 +40,10 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<AdminLogin onLogin={handleLogin} />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<AdminLogin onLogin={handleLogin} />} />
         <Route path="/teacher-login" element={<TeacherLogin />} />
+        <Route path="/teacher-profile/*" element={<TeacherProfile />} />
 
         {/* Protected Admin Routes */}
         <Route
@@ -60,16 +62,13 @@ export default function App() {
                 </Routes>
               </Layout>
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/login" state={{ from: "/admin" }} replace />
             )
           }
         />
-
-        {/* Teacher Profile Route */}
-        <Route path="/teacher-profile" element={<TeacherProfile />} />
         
-        {/* Catch all redirect to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Catch all route */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
