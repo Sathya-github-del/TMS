@@ -10,7 +10,7 @@ const AdminLogin = ({ onLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Dummy credentials check
-    if (email === 'Admin' && password === 'Admin@123') {
+    if (email === 'Admin@example.com' && password === 'Admin@123') {
       onLogin();
       navigate('/admin/dashboard');  // Changed from /dashboard to /admin/dashboard
     } else {
