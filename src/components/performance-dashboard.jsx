@@ -12,7 +12,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Ms. Clara Bennett",
       rating: 4.8,
       reviews: 120,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "92/100",
         feedbackScore: "88/100",
@@ -25,7 +25,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. Ethan Carter",
       rating: 4.5,
       reviews: 110,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "85/100",
         feedbackScore: "82/100",
@@ -38,7 +38,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Ms. Olivia Davis",
       rating: 4.7,
       reviews: 130,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "90/100",
         feedbackScore: "85/100",
@@ -51,7 +51,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. Noah Evans",
       rating: 4.6,
       reviews: 105,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "88/100",
         feedbackScore: "84/100",
@@ -64,7 +64,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Ms. Sophie Wright",
       rating: 4.9,
       reviews: 145,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "94/100",
         feedbackScore: "91/100",
@@ -77,7 +77,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. James Anderson",
       rating: 4.7,
       reviews: 98,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "89/100",
         feedbackScore: "87/100",
@@ -90,7 +90,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Dr. Emma Thompson",
       rating: 4.8,
       reviews: 156,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "93/100",
         feedbackScore: "90/100",
@@ -103,7 +103,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. William Chen",
       rating: 4.6,
       reviews: 112,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "87/100",
         feedbackScore: "85/100",
@@ -116,7 +116,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Ms. Isabella Martinez",
       rating: 4.9,
       reviews: 134,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "95/100",
         feedbackScore: "92/100",
@@ -129,7 +129,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. Daniel Kim",
       rating: 4.7,
       reviews: 108,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "88/100",
         feedbackScore: "86/100",
@@ -142,7 +142,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Ms. Rachel Green",
       rating: 4.8,
       reviews: 142,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "91/100",
         feedbackScore: "89/100",
@@ -155,7 +155,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. Michael Scott",
       rating: 4.5,
       reviews: 95,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "86/100",
         feedbackScore: "83/100",
@@ -168,7 +168,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Dr. Sarah Johnson",
       rating: 4.9,
       reviews: 168,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "96/100",
         feedbackScore: "93/100",
@@ -181,7 +181,7 @@ const PerformanceDashboard = ({ onNavigate }) => {
       name: "Mr. David Wilson",
       rating: 4.7,
       reviews: 115,
-      image: "/placeholder.svg?height=120&width=120",
+      image: "https://placehold.co/600x400",
       metrics: {
         engagementScore: "90/100",
         feedbackScore: "88/100",
