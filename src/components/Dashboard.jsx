@@ -1,4 +1,7 @@
+"use client"
+
 import { useState, useEffect } from "react"
+import { useNavigate } from 'react-router-dom';
 import {
   Home,
   Users,
@@ -9,7 +12,8 @@ import {
   Bell,
   ArrowRight,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
 // Pie Chart Component for Workload Distribution
@@ -339,110 +343,9 @@ const Avatar = ({ children, size = 40, fallback = "U" }) => {
   )
 }
 
-// Sidebar Component
-const Sidebar = ({ isOpen, onClose, isMobile = false, onNavigate }) => {
-  const [activeItem, setActiveItem] = useState('dashboard')
-
-  const menuItems = [
-    { icon: Home, label: "Dashboard", page: "dashboard" },
-    { icon: Users, label: "Teacher Bandwidth Tracker", page: "bandwidth" },
-    { icon: BarChart3, label: "Performance Dashboard", page: "performance" },
-    { icon: Monitor, label: "Integrated LMS", page: "lms" },
-    { icon: Award, label: "Recognition & Rewards System", page: "recognition" },
-    { icon: Lightbulb, label: "AI-Powered Insights", page: "insights" },
-  ]
-
-  const sidebarContent = (
-    <div style={{ width: "280px", backgroundColor: "#f8fafc", padding: "24px", display: "flex", flexDirection: "column", gap: "8px", height: "100%", fontFamily: 'Montserrat, sans-serif' }}>
-      {menuItems.map((item) => (
-        <div
-          key={item.page}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "12px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            backgroundColor: activeItem === item.page ? "#e2e8f0" : "transparent",
-            color: activeItem === item.page ? "#1f2937" : "#64748b",
-            transition: "all 0.2s ease",
-          }}
-          onClick={() => {
-            setActiveItem(item.page);
-            onNavigate(item.page);
-            if (isMobile) onClose?.();
-          }}
-          onMouseEnter={(e) => {
-            if (activeItem !== item.page) {
-              e.currentTarget.style.backgroundColor = "#f1f5f9"
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeItem !== item.page) {
-              e.currentTarget.style.backgroundColor = "transparent"
-            }
-          }}
-        >
-          <item.icon style={{ width: "20px", height: "20px" }} />
-          <span style={{ fontSize: "14px", fontWeight: "500" }}>{item.label}</span>
-        </div>
-      ))}
-    </div>
-  )
-
-  if (isMobile) {
-    return (
-      <>
-        {isOpen && (
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              zIndex: 50,
-            }}
-            onClick={onClose}
-          />
-        )}
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            height: "100vh",
-            backgroundColor: "white",
-            zIndex: 51,
-            transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-            transition: "transform 0.3s ease",
-            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <div
-            style={{
-              padding: "16px",
-              borderBottom: "1px solid #e5e7eb",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h2 style={{ fontSize: "18px", fontWeight: "600", margin: 0, fontFamily: 'Montserrat, sans-serif' }}>Menu</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X style={{ width: "20px", height: "20px" }} />
-            </Button>
-          </div>
-          {sidebarContent}
-        </div>
-      </>
-    )
-  }
-
-  return sidebarContent
-}
-
-export default function App({ onNavigate }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+// Updated Dashboard Component
+export default function Dashboard() {
+  const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(1200)
   const [loading, setLoading] = useState(true)
 
@@ -455,6 +358,11 @@ export default function App({ onNavigate }) {
       return () => window.removeEventListener("resize", handleResize)
     }
   }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    navigate('/');
+  };
 
   if (loading) {
     return (
@@ -475,317 +383,225 @@ export default function App({ onNavigate }) {
   const isTablet = windowWidth >= 768 && windowWidth < 1024
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", fontFamily: 'Montserrat, sans-serif' }}>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: "white",
-          borderBottom: "1px solid #e5e7eb",
-          padding: "16px 24px",
-          position: "sticky",
-          top: 0,
-          zIndex: 40,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            margin: "0 auto",
-          }}
-        >
-          {/* Left side */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {isMobile && (
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
-                <Menu style={{ width: "20px", height: "20px" }} />
-              </Button>
-            )}
-
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  backgroundColor: "#1f2937",
-                  borderRadius: "4px",
-                }}
-              />
-              <h1 style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: '#000', fontFamily: 'Montserrat, sans-serif' }}>Admin</h1>
-            </div>
-          </div>
-
-
-          {/* Right side */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Button variant="ghost" size="icon">
-              <Bell style={{ width: "20px", height: "20px" }} />
-            </Button>
-            <Avatar size={40} fallback="U">
-              <img
-                src="/placeholder.svg?height=40&width=40"
-                alt="User avatar"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
-            </Avatar>
-          </div>
-        </div>
-      </header>
-
-      <div style={{ display: "flex", width: "100%" }}>
-        {/* Desktop Sidebar */}
-        {!isMobile && (
-          <aside
+    <main style={{ padding: "32px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+        {/* Overview Header with Logout */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center"
+        }}>
+          <h2 style={{
+            fontSize: isMobile ? "24px" : "32px",
+            fontWeight: "700",
+            color: "#1f2937",
+            margin: 0,
+            fontFamily: 'Montserrat, sans-serif'
+          }}>
+            Overview
+          </h2>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
             style={{
-              width: "280px",
-              backgroundColor: "white",
-              borderRight: "1px solid #e5e7eb",
-              height: "calc(100vh - 81px)",
-              position: "sticky",
-              top: "81px",
-              overflowY: "auto",
-              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "#ef4444",
+              borderColor: "#ef4444"
             }}
           >
-            <Sidebar onNavigate={onNavigate} />
-          </aside>
-        )}
+            <LogOut size={16} />
+            Logout
+          </Button>
+        </div>
 
-        {/* Mobile Sidebar */}
-        {isMobile && sidebarOpen && (
-          <div style={{ position: "fixed", inset: 0, zIndex: 50 }}>
-            <Sidebar
-              isOpen={sidebarOpen}
-              onClose={() => setSidebarOpen(false)}
-              isMobile
-              onNavigate={onNavigate}
-            />
-          </div>
-        )}
-        {/* Main Content */}
-        <main
+        {/* Stats Cards */}
+        <div
           style={{
-            flex: 1,
-            padding: isMobile ? "24px 16px" : "32px",
-            backgroundColor: "#f8fafc",
-            minHeight: "calc(100vh - 81px)",
-            width: "100%",
-            overflowX: "hidden",
-            margin: "0 auto",
-            maxWidth: "1920px",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+            gap: "24px",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            {/* Overview Header */}
-            <h2
-              style={{
-                fontSize: isMobile ? "24px" : "32px",
-                fontWeight: "700",
-                color: "#1f2937",
-                margin: 0,
-                fontFamily: 'Montserrat, sans-serif'
-              }}
-            >
-              Overview
-            </h2>
-
-            {/* Stats Cards */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-                gap: "24px",
-              }}
-            >
-              {[
-                { title: "Total Teachers", value: "50" },
-                { title: "Overworked Teachers", value: "10" },
-                { title: "Teachers in Training", value: "5" },
-                { title: "Teachers for Recognition", value: "3" },
-              ].map((stat, index) => (
-                <Card key={index} style={{ padding: "24px" }}>
-                  <div style={{ marginBottom: "8px" }}>
-                    <h3
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "500",
-                        color: "#64748b",
-                        margin: 0,
-                        fontFamily: 'Montserrat, sans-serif'
-                      }}
-                    >
-                      {stat.title}
-                    </h3>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "32px",
-                      fontWeight: "700",
-                      color: "#1f2937",
-                      fontFamily: 'Montserrat, sans-serif'
-                    }}
-                  >
-                    {stat.value}
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            {/* Workload Distribution Section */}
-            <div>
-              <h3
+          {[
+            { title: "Total Teachers", value: "50" },
+            { title: "Overworked Teachers", value: "10" },
+            { title: "Teachers in Training", value: "5" },
+            { title: "Teachers for Recognition", value: "3" },
+          ].map((stat, index) => (
+            <Card key={index} style={{ padding: "24px" }}>
+              <div style={{ marginBottom: "8px" }}>
+                <h3
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#64748b",
+                    margin: 0,
+                    fontFamily: 'Montserrat, sans-serif'
+                  }}
+                >
+                  {stat.title}
+                </h3>
+              </div>
+              <div
                 style={{
-                  fontSize: "24px",
+                  fontSize: "32px",
                   fontWeight: "700",
                   color: "#1f2937",
-                  marginBottom: "24px",
                   fontFamily: 'Montserrat, sans-serif'
                 }}
               >
-                Workload Distribution
-              </h3>
+                {stat.value}
+              </div>
+            </Card>
+          ))}
+        </div>
 
-              <div
+        {/* Workload Distribution Section */}
+        <div>
+          <h3
+            style={{
+              fontSize: "24px",
+              fontWeight: "700",
+              color: "#1f2937",
+              marginBottom: "24px",
+              fontFamily: 'Montserrat, sans-serif'
+            }}
+          >
+            Workload Distribution
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+              gap: "24px",
+            }}
+          >
+            {/* Workload Distribution Chart */}
+            <Card>
+              <div style={{ padding: "24px 24px 0 24px" }}>
+                <h4
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                    margin: 0,
+                    fontFamily: 'Montserrat, sans-serif'
+                  }}
+                >
+                  Workload Distribution
+                </h4>
+              </div>
+              <WorkloadDistributionChart />
+            </Card>
+
+            {/* Performance Categories Chart */}
+            <Card>
+              <div style={{ padding: "24px 24px 0 24px" }}>
+                <h4
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                    margin: 0,
+                    fontFamily: 'Montserrat, sans-serif'
+                  }}
+                >
+                  Performance Categories
+                </h4>
+              </div>
+              <PerformanceCategoriesChart />
+            </Card>
+          </div>
+        </div>
+
+        {/* AI Insights Section */}
+        <Card style={{ overflow: "hidden" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+              gap: 0,
+            }}
+          >
+            <div style={{ padding: "32px" }}>
+              <h3
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
-                  gap: "24px",
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  color: "#1f2937",
+                  marginBottom: "8px",
+                  fontFamily: 'Montserrat, sans-serif'
                 }}
               >
-                {/* Workload Distribution Chart */}
-                <Card>
-                  <div style={{ padding: "24px 24px 0 24px" }}>
-                    <h4
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#1f2937",
-                        margin: 0,
-                        fontFamily: 'Montserrat, sans-serif'
-                      }}
-                    >
-                      Workload Distribution
-                    </h4>
-                  </div>
-                  <WorkloadDistributionChart />
-                </Card>
-
-                {/* Performance Categories Chart */}
-                <Card>
-                  <div style={{ padding: "24px 24px 0 24px" }}>
-                    <h4
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#1f2937",
-                        margin: 0,
-                        fontFamily: 'Montserrat, sans-serif'
-                      }}
-                    >
-                      Performance Categories
-                    </h4>
-                  </div>
-                  <PerformanceCategoriesChart />
-                </Card>
-              </div>
+                3 Teachers at Risk of Burnout
+              </h3>
+              <p
+                style={{
+                  color: "#64748b",
+                  marginBottom: "24px",
+                  lineHeight: "1.5",
+                  fontFamily: 'Montserrat, sans-serif'
+                }}
+              >
+                Use AI Insights to identify and support teachers at risk of burnout.
+              </p>
+              <Button
+                variant="outline"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                View AI Insights
+                <ArrowRight style={{ width: "16px", height: "16px" }} />
+              </Button>
             </div>
 
-            {/* AI Insights Section */}
-            <Card style={{ overflow: "hidden" }}>
+            <div
+              style={{
+                background: "linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)",
+                padding: "32px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: isMobile ? "200px" : "auto",
+              }}
+            >
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
-                  gap: 0,
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
                 }}
               >
-                <div style={{ padding: "32px" }}>
-                  <h3
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#1f2937",
-                      marginBottom: "8px",
-                      fontFamily: 'Montserrat, sans-serif'
-                    }}
-                  >
-                    3 Teachers at Risk of Burnout
-                  </h3>
-                  <p
-                    style={{
-                      color: "#64748b",
-                      marginBottom: "24px",
-                      lineHeight: "1.5",
-                      fontFamily: 'Montserrat, sans-serif'
-                    }}
-                  >
-                    Use AI Insights to identify and support teachers at risk of burnout.
-                  </p>
-                  <Button
-                    variant="outline"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    View AI Insights
-                    <ArrowRight style={{ width: "16px", height: "16px" }} />
-                  </Button>
-                </div>
-
+                {/* Simple illustration placeholder */}
                 <div
                   style={{
-                    background: "linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)",
-                    padding: "32px",
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    minHeight: isMobile ? "200px" : "auto",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "120px",
-                      height: "120px",
-                      borderRadius: "50%",
-                      background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
-                    }}
-                  >
-                    {/* Simple illustration placeholder */}
-                    <div
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        borderRadius: "50%",
-                        backgroundColor: "rgba(255, 255, 255, 0.2)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Users style={{ width: "40px", height: "40px", color: "white" }} />
-                    </div>
-                  </div>
+                  <Users style={{ width: "40px", height: "40px", color: "white" }} />
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
-        </main>
+        </Card>
       </div>
-    </div>
+    </main>
   )
 }
