@@ -10,7 +10,7 @@ const TeacherLogin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Dummy teacher credentials check
-    if (email === 'John_W' && password === 'Teacher@123') {
+    if (email === 'John_W@example.com' && password === 'Teacher@123') {
       localStorage.setItem("teacherAuthenticated", "true");
       navigate('/teacher-profile');
     } else {
