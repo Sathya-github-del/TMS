@@ -2,7 +2,17 @@
 
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import {
+  LogOut,
+  Award,
+  Star,
+  Trophy,
+  Heart,
+  ThumbsUp,
+  Smile,
+  Medal,
+  Gift
+} from 'lucide-react';
 
 const RecognitionDashboard = () => {
   const navigate = useNavigate();
@@ -80,6 +90,46 @@ const RecognitionDashboard = () => {
     },
   ]
 
+  // Add reward statistics
+  const rewardStats = [
+    {
+      title: "Total Kudos",
+      value: "1,234",
+      icon: <Heart size={24} />,
+      color: "#ef4444",
+      change: "+12%"
+    },
+    {
+      title: "Active Awards",
+      value: "156",
+      icon: <Trophy size={24} />,
+      color: "#f59e0b",
+      change: "+5%"
+    },
+    {
+      title: "Teacher Recognition",
+      value: "89",
+      icon: <Medal size={24} />,
+      color: "#3b82f6",
+      change: "+8%"
+    },
+    {
+      title: "Rewards Distributed",
+      value: "450",
+      icon: <Gift size={24} />,
+      color: "#10b981",
+      change: "+15%"
+    }
+  ];
+
+  // Add achievement categories
+  const achievementCategories = [
+    { id: 'all', label: 'All Achievements' },
+    { id: 'kudos', label: 'Kudos' },
+    { id: 'awards', label: 'Awards' },
+    { id: 'badges', label: 'Badges' }
+  ];
+
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     navigate('/');
@@ -88,7 +138,7 @@ const RecognitionDashboard = () => {
   return (
     <main style={{ padding: "32px" }}>
       {/* Header with Logout */}
-      <div style={{ 
+      <div style={{
         marginBottom: "32px",
         display: "flex",
         justifyContent: "space-between",
@@ -121,6 +171,98 @@ const RecognitionDashboard = () => {
           <LogOut size={16} />
           Logout
         </button>
+      </div>
+
+      {/* Reward Statistics */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "24px",
+        marginBottom: "32px"
+      }}>
+        {rewardStats.map((stat, index) => (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+            }}
+          >
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "16px"
+            }}>
+              <div style={{
+                padding: "12px",
+                borderRadius: "12px",
+                backgroundColor: `${stat.color}15`,
+                color: stat.color
+              }}>
+                {stat.icon}
+              </div>
+              <div style={{
+                padding: "4px 12px",
+                borderRadius: "999px",
+                backgroundColor: "#f0fdf4",
+                color: "#16a34a",
+                fontSize: "14px"
+              }}>
+                {stat.change}
+              </div>
+            </div>
+            <h3 style={{
+              fontSize: "14px",
+              color: "#6b7280",
+              marginBottom: "8px"
+            }}>
+              {stat.title}
+            </h3>
+            <div style={{
+              fontSize: "24px",
+              fontWeight: "700",
+              color: "#1f2937"
+            }}>
+              {stat.value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Achievement Categories */}
+      <div style={{
+        backgroundColor: "white",
+        padding: "16px",
+        borderRadius: "12px",
+        marginBottom: "24px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+      }}>
+        <div style={{
+          display: "flex",
+          gap: "12px",
+          overflowX: "auto",
+          padding: "4px"
+        }}>
+          {achievementCategories.map(category => (
+            <button
+              key={category.id}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "none",
+                backgroundColor: category.id === 'all' ? "#3b82f6" : "#f3f4f6",
+                color: category.id === 'all' ? "white" : "#6b7280",
+                fontSize: "14px",
+                cursor: "pointer",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Leaderboard */}

@@ -2,62 +2,104 @@
 
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { LogOut, AlertCircle, BarChart2, Clock, Briefcase } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const TeacherDashboard = () => {
+const TeacherBandwidthTracker = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedSubject, setSelectedSubject] = useState("")
   const [selectedGrade, setSelectedGrade] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("")
 
+  // Enhanced teacher data with more details
   const teacherData = [
     {
+      id: 1,
       name: "Ms. Bennett",
       subject: "Mathematics",
+      grade: "Grade 8",
       totalWeeklyHours: 40,
       teachingHours: 25,
       adminHours: 10,
       extracurricularHours: 5,
       workload: 35,
+      status: "Optimal",
+      efficiency: 85,
+      lastUpdated: "2023-12-05"
     },
     {
+      id: 2,
       name: "Mr. Carter",
       subject: "Science",
+      grade: "Grade 9",
       totalWeeklyHours: 35,
       teachingHours: 20,
       adminHours: 10,
       extracurricularHours: 5,
       workload: 25,
+      status: "Optimal",
+      efficiency: 75,
+      lastUpdated: "2023-12-05"
     },
     {
+      id: 3,
       name: "Ms. Davis",
       subject: "English",
+      grade: "Grade 10",
       totalWeeklyHours: 45,
       teachingHours: 30,
       adminHours: 10,
       extracurricularHours: 5,
       workload: 40,
+      status: "Overworked",
+      efficiency: 90,
+      lastUpdated: "2023-12-05"
     },
     {
+      id: 4,
       name: "Mr. Evans",
       subject: "History",
+      grade: "Grade 7",
       totalWeeklyHours: 30,
       teachingHours: 15,
       adminHours: 10,
       extracurricularHours: 5,
       workload: 20,
+      status: "Available",
+      efficiency: 60,
+      lastUpdated: "2023-12-05"
     },
     {
+      id: 5,
       name: "Ms. Foster",
       subject: "Art",
+      grade: "Grade 6",
       totalWeeklyHours: 40,
       teachingHours: 25,
       adminHours: 10,
       extracurricularHours: 5,
       workload: 35,
+      status: "Optimal",
+      efficiency: 85,
+      lastUpdated: "2023-12-05"
     },
   ]
+
+  // Analytics data for workload distribution
+  const workloadStats = {
+    overworked: teacherData.filter(t => t.workload > 35).length,
+    optimal: teacherData.filter(t => t.workload >= 25 && t.workload <= 35).length,
+    available: teacherData.filter(t => t.workload < 25).length,
+    averageWorkload: teacherData.reduce((acc, curr) => acc + curr.workload, 0) / teacherData.length
+  };
+
+  // Chart data for workload distribution
+  const chartData = [
+    { name: 'Teaching', value: teacherData.reduce((acc, curr) => acc + curr.teachingHours, 0) },
+    { name: 'Admin', value: teacherData.reduce((acc, curr) => acc + curr.adminHours, 0) },
+    { name: 'Extracurricular', value: teacherData.reduce((acc, curr) => acc + curr.extracurricularHours, 0) }
+  ];
 
   const getWorkloadColor = (workload) => {
     if (workload <= 20) return "#60a5fa"
@@ -83,134 +125,199 @@ const TeacherDashboard = () => {
     navigate('/');
   };
 
+  // Add statsCards data array
+  const statsCards = [
+    {
+      title: "Average Workload",
+      value: `${workloadStats.averageWorkload.toFixed(1)}h`,
+      icon: <Clock size={24} />,
+      color: "#3b82f6",
+      bgColor: "#eff6ff"
+    },
+    {
+      title: "Overworked Teachers",
+      value: workloadStats.overworked,
+      icon: <AlertCircle size={24} />,
+      color: "#ef4444",
+      bgColor: "#fef2f2"
+    },
+    {
+      title: "Optimal Workload",
+      value: workloadStats.optimal,
+      icon: <BarChart2 size={24} />,
+      color: "#10b981",
+      bgColor: "#f0fdf4"
+    },
+    {
+      title: "Available Capacity",
+      value: workloadStats.available,
+      icon: <Briefcase size={24} />,
+      color: "#f59e0b",
+      bgColor: "#fefce8"
+    }
+  ];
+
+  // Add filterOptions array
+  const filterOptions = [
+    {
+      label: "Subject",
+      value: selectedSubject,
+      setter: setSelectedSubject,
+      options: ["Mathematics", "Science", "English", "History", "Art"]
+    },
+    {
+      label: "Grade",
+      value: selectedGrade,
+      setter: setSelectedGrade,
+      options: ["Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10"]
+    },
+    {
+      label: "Status",
+      value: selectedStatus,
+      setter: setSelectedStatus,
+      options: ["Optimal", "Overworked", "Available"]
+    }
+  ];
+
   return (
     <main style={{ padding: "32px" }}>
-      {/* Header with Logout */}
-      <div style={{ 
-        marginBottom: "32px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
+      {/* Stats Cards */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "24px",
+        marginBottom: "32px"
       }}>
-        <div>
-          <h1 style={{
-            fontSize: "32px",
-            fontWeight: "700",
-            color: "#1f2937",
-            margin: "0 0 8px 0",
-          }}>
-            Teacher Workload Management
-          </h1>
-          <p style={{
-            fontSize: "16px",
-            color: "#6b7280",
-            margin: "0",
-          }}>
-            Manage and monitor teacher workload effectively.
-          </p>
-        </div>
-        <button
-          onClick={handleLogout}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px 16px",
-            borderRadius: "6px",
-            border: "1px solid #ef4444",
-            color: "#ef4444",
-            background: "none",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "500"
-          }}
-        >
-          <LogOut size={16} />
-          Logout
-        </button>
+        {statsCards.map((stat, index) => (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+            }}
+          >
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "16px"
+            }}>
+              <div style={{
+                padding: "12px",
+                borderRadius: "12px",
+                backgroundColor: stat.bgColor,
+                color: stat.color
+              }}>
+                {stat.icon}
+              </div>
+              <div>
+                <div style={{ fontSize: "14px", color: "#6b7280" }}>{stat.title}</div>
+                <div style={{ fontSize: "24px", fontWeight: "700", color: "#1f2937" }}>{stat.value}</div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Search and Filters */}
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "24px",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-          marginBottom: "24px",
-        }}
-      >
-        {/* Search Bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "#f1f5f9",
-            borderRadius: "8px",
-            padding: "12px 16px",
-            marginBottom: "16px",
-            gap: "8px",
-          }}
-        >
-          <span style={{ color: "#64748b", fontSize: "16px" }}>🔍</span>
-          <input
-            type="text"
-            placeholder="Search by teacher name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              border: "none",
-              backgroundColor: "transparent",
-              outline: "none",
-              flex: 1,
-              fontSize: "14px",
-              color: "#374151",
-            }}
-          />
-        </div>
+      {/* Enhanced Search and Filters */}
+      <div style={{
+        backgroundColor: "white",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        marginBottom: "24px"
+      }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto auto auto",
+          gap: "16px",
+          alignItems: "center"
+        }}>
+          {/* Search Input */}
+          <div style={{
+            position: "relative"
+          }}>
+            <input
+              type="text"
+              placeholder="Search teachers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 16px",
+                paddingLeft: "40px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                fontSize: "14px"
+              }}
+            />
+            <span style={{
+              position: "absolute",
+              left: "12px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#9ca3af"
+            }}>
+              🔍
+            </span>
+          </div>
 
-        {/* Filter Dropdowns */}
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            { label: "Subject", value: selectedSubject, setter: setSelectedSubject },
-            { label: "Grade", value: selectedGrade, setter: setSelectedGrade },
-            { label: "Status", value: selectedStatus, setter: setSelectedStatus },
-          ].map((filter, index) => (
+          {/* Filter Dropdowns */}
+          {filterOptions.map((filter, index) => (
             <select
               key={index}
               value={filter.value}
               onChange={(e) => filter.setter(e.target.value)}
               style={{
-                padding: "8px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: "6px",
+                padding: "10px 16px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
                 fontSize: "14px",
-                backgroundColor: "white",
-                minWidth: "120px",
+                minWidth: "150px",
+                color: "#1f2937",
+                backgroundColor: "white"
               }}
             >
               <option value="">{filter.label}</option>
-              {filter.label === "Subject" && (
-                <>
-                  <option value="Mathematics">Mathematics</option>
-                  <option value="Science">Science</option>
-                  <option value="English">English</option>
-                  <option value="History">History</option>
-                  <option value="Art">Art</option>
-                </>
-              )}
+              {filter.options.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
             </select>
           ))}
         </div>
       </div>
 
-      {/* Teacher Table */}
+      {/* Workload Distribution Chart */}
+      <div style={{
+        backgroundColor: "white",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        marginBottom: "24px",
+        height: "400px"
+      }}>
+        <h2 style={{
+          fontSize: "18px",
+          fontWeight: "600",
+          color: "#1f2937",
+          marginBottom: "24px"
+        }}>
+          Workload Distribution
+        </h2>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="value" fill="#3b82f6" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Enhanced Teacher Table */}
       <div
         style={{
           backgroundColor: "white",
@@ -233,11 +340,15 @@ const TeacherDashboard = () => {
                 {[
                   "Name",
                   "Subject",
+                  "Grade",
                   "Total Weekly Hours",
                   "Teaching Hours",
                   "Admin Hours",
                   "Extracurricular Hours",
                   "Workload",
+                  "Status",
+                  "Efficiency",
+                  "Last Updated"
                 ].map((header, index) => (
                   <th
                     key={index}
@@ -267,6 +378,7 @@ const TeacherDashboard = () => {
                     {teacher.name}
                   </td>
                   <td style={{ padding: "16px", fontSize: "14px", color: "#3b82f6" }}>{teacher.subject}</td>
+                  <td style={{ padding: "16px", fontSize: "14px", color: "#6b7280" }}>{teacher.grade}</td>
                   <td style={{ padding: "16px", fontSize: "14px", color: "#6b7280" }}>
                     {teacher.totalWeeklyHours}
                   </td>
@@ -306,119 +418,23 @@ const TeacherDashboard = () => {
                       </span>
                     </div>
                   </td>
+                  <td style={{ padding: "16px", fontSize: "14px", color: teacher.status === "Overworked" ? "#ef4444" : "#10b981" }}>
+                    {teacher.status}
+                  </td>
+                  <td style={{ padding: "16px", fontSize: "14px", color: "#6b7280" }}>
+                    {teacher.efficiency}%
+                  </td>
+                  <td style={{ padding: "16px", fontSize: "14px", color: "#6b7280" }}>
+                    {new Date(teacher.lastUpdated).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      {/* Workload Distribution */}
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-          padding: "24px",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: "600",
-            color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Workload Distribution
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "24px",
-          }}
-        >
-          {/* Weekly Workload Summary */}
-          <div>
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#6b7280",
-                marginBottom: "8px",
-              }}
-            >
-              Weekly Workload Hours
-            </div>
-            <div
-              style={{
-                fontSize: "48px",
-                fontWeight: "700",
-                color: "#1f2937",
-                lineHeight: "1",
-              }}
-            >
-              35
-            </div>
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#059669",
-                marginTop: "4px",
-              }}
-            >
-              This Week +5%
-            </div>
-          </div>
-
-          {/* Individual Teacher Workloads */}
-          <div>
-            {teacherData.map((teacher, index) => (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  marginBottom: "12px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "100px",
-                    fontSize: "14px",
-                    color: "#3b82f6",
-                    fontWeight: "500",
-                  }}
-                >
-                  {teacher.name}
-                </div>
-                <div
-                  style={{
-                    flex: 1,
-                    height: "8px",
-                    backgroundColor: "#f1f5f9",
-                    borderRadius: "4px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: `${getWorkloadWidth(teacher.workload)}%`,
-                      height: "100%",
-                      backgroundColor: getWorkloadColor(teacher.workload),
-                      borderRadius: "4px",
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </main>
   )
 }
 
-export default TeacherDashboard
+export default TeacherBandwidthTracker

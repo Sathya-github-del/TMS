@@ -3,223 +3,236 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from 'react-router-dom';
 import {
-  Home,
   Users,
   BarChart3,
-  Monitor,
-  Award,
-  Lightbulb,
-  Bell,
+  LogOut,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  GraduationCap,
   ArrowRight,
-  Menu,
-  X,
-  LogOut
+  Award
 } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import {
+  HomeIcon,
+  UsersIcon,
+  ChartBarIcon,
+  BookOpenIcon,
+  TrophyIcon,
+  LightBulbIcon,
+  ArrowRightOnRectangleIcon
+} from '@heroicons/react/24/outline'
 
-// Pie Chart Component for Workload Distribution
+// Enhanced Workload Distribution Chart Component
 const WorkloadDistributionChart = () => {
   const data = [
-    { label: "High", value: 25, color: "#ef4444" },
-    { label: "Medium", value: 45, color: "#f59e0b" },
-    { label: "Low", value: 30, color: "#10b981" },
-  ]
+    { name: "High", value: 25, color: "#ef4444" },
+    { name: "Medium", value: 45, color: "#f59e0b" },
+    { name: "Low", value: 30, color: "#10b981" },
+  ];
 
-  const total = data.reduce((sum, item) => sum + item.value, 0)
-  let cumulativePercentage = 0
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-  const createPath = (percentage, cumulativePercentage) => {
-    const startAngle = cumulativePercentage * 3.6 - 90
-    const endAngle = (cumulativePercentage + percentage) * 3.6 - 90
-    const largeArcFlag = percentage > 50 ? 1 : 0
-
-    const startX = 50 + 40 * Math.cos((startAngle * Math.PI) / 180)
-    const startY = 50 + 40 * Math.sin((startAngle * Math.PI) / 180)
-    const endX = 50 + 40 * Math.cos((endAngle * Math.PI) / 180)
-    const endY = 50 + 40 * Math.sin((endAngle * Math.PI) / 180)
-
-    return `M 50 50 L ${startX} ${startY} A 40 40 0 ${largeArcFlag} 1 ${endX} ${endY} Z`
-  }
-
-  return (
-    <div style={{ padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", fontFamily: 'Montserrat, sans-serif' }}>
-      <div style={{ position: "relative" }}>
-        <svg width="200" height="200" viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
-          {data.map((item, index) => {
-            const percentage = (item.value / total) * 100
-            const path = createPath(percentage, cumulativePercentage)
-            cumulativePercentage += percentage
-
-            return (
-              <path
-                key={index}
-                d={path}
-                fill={item.color}
-                stroke="white"
-                strokeWidth="1"
-                style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}
-              />
-            )
-          })}
-        </svg>
-
-        {/* Center text */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontSize: "20px", fontWeight: "700", color: "#1f2937" }}>{total}%</div>
-          <div style={{ fontSize: "12px", color: "#64748b" }}>Total</div>
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px" }}>
-        {data.map((item, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div
-              style={{
-                width: "12px",
-                height: "12px",
-                borderRadius: "50%",
-                backgroundColor: item.color,
-              }}
-            />
-            <span
-              style={{
-                fontSize: "14px",
-                color: "#64748b",
-                fontWeight: "500",
-                fontFamily: 'Montserrat, sans-serif'
-              }}
-            >
-              {item.label} ({item.value}%)
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Enhanced Bar Chart Component for Performance Categories
-const PerformanceCategoriesChart = () => {
-  const data = [
-    { label: "Exceeding Expectations", value: 35, color: "#10b981" },
-    { label: "Meeting Expectations", value: 55, color: "#3b82f6" },
-    { label: "Needs Improvement", value: 20, color: "#f59e0b" },
-  ]
-
-  const maxValue = Math.max(...data.map((item) => item.value))
-
-  return (
-    <div style={{ padding: "20px", fontFamily: 'Montserrat, sans-serif' }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          height: "200px",
-          gap: "32px",
-          marginBottom: "20px",
-          position: "relative",
-        }}
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{ fontSize: '12px', fontWeight: '500' }}
       >
-        {/* Y-axis grid lines */}
-        {[25, 50, 75].map((line) => (
-          <div
-            key={line}
-            style={{
-              position: "absolute",
-              left: "20px",
-              right: "20px",
-              bottom: `${(line / 100) * 160 + 20}px`,
-              height: "1px",
-              backgroundColor: "#e5e7eb",
-              zIndex: 1,
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{
+          backgroundColor: 'white',
+          padding: '8px 12px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{
+            color: payload[0].payload.color,
+            fontWeight: '600',
+            fontSize: '14px'
+          }}>
+            {payload[0].name}: {payload[0].value}%
+          </div>
+          <div style={{
+            fontSize: '12px',
+            color: '#6b7280',
+            marginTop: '4px'
+          }}>
+            {payload[0].value} teachers
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div style={{ width: '100%', height: 300 }}>
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={100}
+            fill="#8884d8"
+            dataKey="value"
+            animationDuration={1000}
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                style={{
+                  filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.1))',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+            wrapperStyle={{
+              paddingTop: '20px',
+              fontSize: '14px',
+              fontFamily: 'Montserrat, sans-serif'
             }}
           />
-        ))}
-
-        {data.map((item, index) => {
-          const height = (item.value / maxValue) * 160
-
-          return (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "8px",
-                position: "relative",
-                zIndex: 2,
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    color: "#374151",
-                    marginBottom: "4px",
-                    fontFamily: 'Montserrat, sans-serif'
-                  }}
-                >
-                  {item.value}%
-                </span>
-                <div
-                  style={{
-                    width: "48px",
-                    height: `${height}px`,
-                    backgroundColor: item.color,
-                    borderRadius: "4px 4px 0 0",
-                    transition: "all 0.3s ease",
-                    boxShadow: `0 2px 4px ${item.color}30`,
-                  }}
-                />
-              </div>
-              <span
-                style={{
-                  fontSize: "12px",
-                  color: "#64748b",
-                  textAlign: "center",
-                  lineHeight: "1.2",
-                  maxWidth: "80px",
-                  fontWeight: "500",
-                  fontFamily: 'Montserrat, sans-serif'
-                }}
-              >
-                {item.label}
-              </span>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Y-axis labels */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "12px",
-          color: "#64748b",
-          padding: "0 20px",
-          fontWeight: "500",
-          fontFamily: 'Montserrat, sans-serif'
-        }}
-      >
-        <span>0%</span>
-        <span>25%</span>
-        <span>50%</span>
-        <span>75%</span>
-      </div>
+        </PieChart>
+      </ResponsiveContainer>
     </div>
-  )
+  );
+}
+
+// Enhanced Performance Categories Chart Component
+const PerformanceCategoriesChart = () => {
+  const data = [
+    {
+      category: "Exceeding",
+      value: 35,
+      totalTeachers: 12,
+      color: "#10b981",
+      description: "Exceeding Expectations"
+    },
+    {
+      category: "Meeting",
+      value: 55,
+      totalTeachers: 18,
+      color: "#3b82f6",
+      description: "Meeting Expectations"
+    },
+    {
+      category: "Needs",
+      value: 20,
+      totalTeachers: 6,
+      color: "#f59e0b",
+      description: "Needs Improvement"
+    },
+  ];
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div style={{
+          backgroundColor: 'white',
+          padding: '12px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{
+            color: data.color,
+            fontWeight: '600',
+            marginBottom: '4px'
+          }}>
+            {data.description}
+          </div>
+          <div style={{
+            fontSize: '14px',
+            color: '#6b7280'
+          }}>
+            {data.totalTeachers} teachers ({data.value}%)
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div style={{ padding: "20px", height: "300px" }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          barSize={40}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            vertical={false}
+            stroke="#f1f5f9"
+          />
+          <XAxis
+            dataKey="category"
+            axisLine={false}
+            tickLine={false}
+            stroke="#94a3b8"
+            fontSize={12}
+          />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            stroke="#94a3b8"
+            fontSize={12}
+            tickFormatter={(value) => `${value}%`}
+          />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: 'transparent' }}
+          />
+          <Bar
+            dataKey="value"
+            radius={[4, 4, 0, 0]}
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                style={{
+                  filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.1))',
+                  cursor: 'pointer'
+                }}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }
 
 // Card Component
@@ -382,13 +395,65 @@ export default function Dashboard() {
   const isMobile = windowWidth < 1024
   const isTablet = windowWidth >= 768 && windowWidth < 1024
 
+  const statsData = [
+    {
+      title: "Total Teachers",
+      value: "50",
+      icon: <Users size={24} color="#3b82f6" />,
+      change: "+5",
+      trend: "up",
+      color: "#3b82f6",
+      bgColor: "#eff6ff",
+      detail: "Active faculty members"
+    },
+    {
+      title: "Overworked Teachers",
+      value: "10",
+      icon: <AlertTriangle size={24} color="#ef4444" />,
+      change: "-2",
+      trend: "down",
+      color: "#ef4444",
+      bgColor: "#fef2f2",
+      detail: "Above optimal workload"
+    },
+    {
+      title: "Teachers in Training",
+      value: "5",
+      icon: <GraduationCap size={24} color="#10b981" />,
+      change: "+2",
+      trend: "up",
+      color: "#10b981",
+      bgColor: "#f0fdf4",
+      detail: "Professional development"
+    },
+    {
+      title: "Teachers for Recognition",
+      value: "3",
+      icon: <Award size={24} color="#f59e0b" />,
+      change: "+1",
+      trend: "up",
+      color: "#f59e0b",
+      bgColor: "#fefce8",
+      detail: "Outstanding performance"
+    }
+  ];
+
+  const sidebarItems = [
+    { icon: <HomeIcon className="h-5 w-5" />, label: "Dashboard", page: "dashboard" },
+    { icon: <UsersIcon className="h-5 w-5" />, label: "Teacher Bandwidth", page: "bandwidth" },
+    { icon: <ChartBarIcon className="h-5 w-5" />, label: "Performance", page: "performance" },
+    { icon: <BookOpenIcon className="h-5 w-5" />, label: "Integrated LMS", page: "lms" },
+    { icon: <TrophyIcon className="h-5 w-5" />, label: "Recognition", page: "recognition" },
+    { icon: <LightBulbIcon className="h-5 w-5" />, label: "AI Insights", page: "insights" }
+  ];
+
   return (
     <main style={{ padding: "32px" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
         {/* Overview Header with Logout */}
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center"
         }}>
           <h2 style={{
@@ -417,42 +482,83 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-            gap: "24px",
-          }}
-        >
-          {[
-            { title: "Total Teachers", value: "50" },
-            { title: "Overworked Teachers", value: "10" },
-            { title: "Teachers in Training", value: "5" },
-            { title: "Teachers for Recognition", value: "3" },
-          ].map((stat, index) => (
-            <Card key={index} style={{ padding: "24px" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+          gap: "24px",
+        }}>
+          {statsData.map((stat, index) => (
+            <Card
+              key={index}
+              style={{
+                padding: "24px",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+                }
+              }}
+              onClick={() => console.log(`Clicked ${stat.title}`)}
+            >
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: "16px"
+              }}>
+                <div style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  backgroundColor: stat.bgColor,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  {stat.icon}
+                </div>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  backgroundColor: stat.trend === "up" ? "#f0fdf4" : "#fef2f2",
+                  padding: "4px 8px",
+                  borderRadius: "9999px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  color: stat.trend === "up" ? "#16a34a" : "#dc2626"
+                }}>
+                  {stat.trend === "up" ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  {stat.change}
+                </div>
+              </div>
               <div style={{ marginBottom: "8px" }}>
-                <h3
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#64748b",
-                    margin: 0,
-                    fontFamily: 'Montserrat, sans-serif'
-                  }}
-                >
+                <h3 style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#6b7280",
+                  margin: "0 0 4px 0",
+                }}>
                   {stat.title}
                 </h3>
-              </div>
-              <div
-                style={{
+                <div style={{
                   fontSize: "32px",
                   fontWeight: "700",
                   color: "#1f2937",
-                  fontFamily: 'Montserrat, sans-serif'
-                }}
-              >
-                {stat.value}
+                  lineHeight: "1.2"
+                }}>
+                  {stat.value}
+                </div>
+              </div>
+              <div style={{
+                fontSize: "13px",
+                color: "#6b7280",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px"
+              }}>
+                {stat.detail}
               </div>
             </Card>
           ))}
@@ -519,35 +625,107 @@ export default function Dashboard() {
 
         {/* AI Insights Section */}
         <Card style={{ overflow: "hidden" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
-              gap: 0,
-            }}
-          >
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+            gap: "24px"
+          }}>
             <div style={{ padding: "32px" }}>
-              <h3
-                style={{
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "16px"
+              }}>
+                <div style={{
+                  backgroundColor: "#fef2f2",
+                  padding: "8px",
+                  borderRadius: "50%"
+                }}>
+                  <AlertTriangle size={24} color="#dc2626" />
+                </div>
+                <h3 style={{
                   fontSize: "20px",
                   fontWeight: "700",
                   color: "#1f2937",
-                  marginBottom: "8px",
-                  fontFamily: 'Montserrat, sans-serif'
-                }}
-              >
-                3 Teachers at Risk of Burnout
-              </h3>
-              <p
-                style={{
-                  color: "#64748b",
-                  marginBottom: "24px",
-                  lineHeight: "1.5",
-                  fontFamily: 'Montserrat, sans-serif'
-                }}
-              >
-                Use AI Insights to identify and support teachers at risk of burnout.
-              </p>
+                  margin: 0
+                }}>
+                  3 Teachers at Risk of Burnout
+                </h3>
+              </div>
+
+              {/* Teacher Risk List */}
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                marginBottom: "24px"
+              }}>
+                {/*
+                  Teacher data can be mapped here. This is just static data for illustration.
+                */}
+                {/*
+                  { name: "Sarah Johnson", department: "Science", risk: "High", workload: "45hrs/week" },
+                  { name: "Michael Chen", department: "Mathematics", risk: "Medium", workload: "42hrs/week" },
+                  { name: "Emma Davis", department: "English", risk: "Medium", workload: "40hrs/week" },
+                */}
+                {/*
+                  Sample static data for illustration
+                */}
+                {["Sarah Johnson", "Michael Chen", "Emma Davis"].map((name, index) => (
+                  <div key={index} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                    padding: "12px",
+                    backgroundColor: "#fafafa",
+                    borderRadius: "8px",
+                    border: "1px solid #f3f4f6"
+                  }}>
+                    <div style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: "#e5e7eb",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "16px",
+                      fontWeight: "500",
+                      color: "#4b5563"
+                    }}>
+                      {name.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#1f2937",
+                        marginBottom: "4px"
+                      }}>
+                        {name}
+                      </div>
+                      <div style={{
+                        fontSize: "12px",
+                        color: "#6b7280"
+                      }}>
+                        Science • 45hrs/week
+                      </div>
+                    </div>
+                    <div style={{
+                      padding: "4px 12px",
+                      borderRadius: "9999px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      backgroundColor: "#fef2f2",
+                      color: "#dc2626"
+                    }}>
+                      High Risk
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <Button
                 variant="outline"
                 style={{
@@ -561,41 +739,66 @@ export default function Dashboard() {
               </Button>
             </div>
 
-            <div
-              style={{
-                background: "linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)",
-                padding: "32px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: isMobile ? "200px" : "auto",
-              }}
-            >
-              <div
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+            <div style={{
+              background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+              padding: "32px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: "16px"
+            }}>
+              <div style={{
+                backgroundColor: "white",
+                borderRadius: "12px",
+                padding: "16px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+              }}>
+                <div style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
-                {/* Simple illustration placeholder */}
-                <div
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Users style={{ width: "40px", height: "40px", color: "white" }} />
+                  gap: "12px",
+                  marginBottom: "8px"
+                }}>
+                  <TrendingUp size={20} color="#16a34a" />
+                  <span style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#1f2937"
+                  }}>
+                    Recommended Actions
+                  </span>
+                </div>
+                <ul style={{
+                  margin: "0",
+                  padding: "0 0 0 16px",
+                  fontSize: "13px",
+                  color: "#4b5563"
+                }}>
+                  <li>Schedule wellness check-ins</li>
+                  <li>Review workload distribution</li>
+                  <li>Offer support resources</li>
+                </ul>
+              </div>
+
+              <div style={{
+                textAlign: "center",
+                padding: "16px",
+                backgroundColor: "rgba(255,255,255,0.5)",
+                borderRadius: "12px"
+              }}>
+                <div style={{
+                  fontSize: "32px",
+                  fontWeight: "700",
+                  color: "#92400e",
+                  marginBottom: "4px"
+                }}>
+                  42hrs
+                </div>
+                <div style={{
+                  fontSize: "14px",
+                  color: "#92400e"
+                }}>
+                  Average Weekly Workload
                 </div>
               </div>
             </div>

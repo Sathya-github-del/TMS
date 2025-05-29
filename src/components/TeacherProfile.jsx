@@ -3,36 +3,68 @@
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import {
+  RiDashboardLine,
+  RiTimeLine,
+  RiBarChartBoxLine,
+  RiMessage2Line
+} from 'react-icons/ri';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const TeacherProfile = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("Overview")
 
-  const sidebarItems = [
-    { icon: "📊", label: "Overview", active: true },
-    { icon: "💼", label: "Workload", active: false },
-    { icon: "📈", label: "Performance", active: false },
-    { icon: "💬", label: "Feedback", active: false },
-  ]
+  const handleNavigation = (page) => {
+    switch (page) {
+      case "Workload":
+        navigate('/teacher/workload');
+        break;
+      case "Performance":
+        navigate('/teacher/performance');
+        break;
+      case "Feedback":
+        navigate('/teacher/feedback');
+        break;
+      default:
+        break;
+    }
+  };
 
+  const sidebarItems = [
+    { icon: <RiDashboardLine size={20} color="#000" />, label: "Overview", active: true },
+    // { icon: <RiTimeLine size={20} color="#000" />, label: "Workload", active: true },
+    // { icon: <RiBarChartBoxLine size={20} color="#000" />, label: "Performance", active: true },
+    // { icon: <RiMessage2Line size={20} color="#000" />, label: "Feedback", active: true },
+  ]
+  // Update course data with more details
   const courseData = [
     {
       name: "Advanced Biology",
       status: "Completed",
       progress: 100,
       statusColor: "#10b981",
+      students: 28,
+      lastUpdated: "2023-12-01",
+      completion: "2023-11-30"
     },
     {
       name: "Chemistry 101",
       status: "In Progress",
       progress: 65,
       statusColor: "#3b82f6",
+      students: 32,
+      lastUpdated: "2023-12-05",
+      completion: null
     },
     {
       name: "Physics Fundamentals",
       status: "Not Started",
       progress: 0,
       statusColor: "#6b7280",
+      students: 25,
+      lastUpdated: "2023-12-01",
+      completion: null
     },
   ]
 
@@ -64,37 +96,36 @@ const TeacherProfile = () => {
     },
   ]
 
-  // Simple line chart data points for KPI visualization
-  const kpiDataPoints = [
-    { month: "Jan", value: 75 },
-    { month: "Feb", value: 82 },
-    { month: "Mar", value: 78 },
-    { month: "Apr", value: 85 },
-    { month: "May", value: 88 },
-    { month: "Jun", value: 72 },
-    { month: "Jul", value: 85 },
-  ]
+  // Update KPI data structure
+  const kpiData = [
+    { month: "Jan", score: 75 },
+    { month: "Feb", score: 82 },
+    { month: "Mar", score: 78 },
+    { month: "Apr", score: 85 },
+    { month: "May", score: 88 },
+    { month: "Jun", score: 72 },
+    { month: "Jul", score: 85 },
+  ];
 
-  const createSVGPath = (points, width, height) => {
-    const maxValue = Math.max(...points.map((p) => p.value))
-    const minValue = Math.min(...points.map((p) => p.value))
-    const range = maxValue - minValue || 1
-
-    const pathData = points
-      .map((point, index) => {
-        const x = (index / (points.length - 1)) * width
-        const y = height - ((point.value - minValue) / range) * height
-        return `${index === 0 ? "M" : "L"} ${x} ${y}`
-      })
-      .join(" ")
-
-    return pathData
-  }
+  // Calculate trend
+  const lastMonth = kpiData[kpiData.length - 1].score;
+  const previousMonth = kpiData[kpiData.length - 2].score;
+  const trend = ((lastMonth - previousMonth) / previousMonth) * 100;
 
   const handleLogout = () => {
     localStorage.removeItem("teacherAuthenticated");
-    navigate('/');
+    sessionStorage.removeItem('teacherRedirectPath');
+    window.dispatchEvent(new Event('storage'));
+    navigate('/teacher-login');
   };
+
+  // Add workload data
+  const workloadData = [
+    { label: "Teaching", value: 80, color: "#3b82f6" },
+    { label: "Lesson Planning", value: 60, color: "#8b5cf6" },
+    { label: "Grading", value: 45, color: "#06b6d4" },
+    { label: "Meetings", value: 30, color: "#10b981" },
+  ];
 
   return (
     <div
@@ -141,7 +172,7 @@ const TeacherProfile = () => {
               color: "#1f2937",
             }}
           >
-            Admin
+            Teacher
           </span>
         </div>
 
@@ -161,7 +192,7 @@ const TeacherProfile = () => {
                 color: item.active ? "#1d4ed8" : "#4b5563",
                 fontWeight: item.active ? "500" : "400",
               }}
-              onClick={() => setActiveNav(item.label)}
+              onClick={() => handleNavigation(item.label)}
             >
               <span style={{ fontSize: "16px" }}>{item.icon}</span>
               <span style={{ fontSize: "14px" }}>{item.label}</span>
@@ -384,37 +415,54 @@ const TeacherProfile = () => {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "end",
-                  justifyContent: "center",
+                  alignItems: "flex-end", // This aligns bars to the bottom
+                  justifyContent: "space-around",
                   gap: "16px",
-                  height: "120px",
+                  height: "200px",
                   marginBottom: "16px",
+                  padding: "20px"
                 }}
               >
-                {[
-                  { label: "Teaching", height: "80%", color: "#3b82f6" },
-                  { label: "Lesson Planning", height: "60%", color: "#8b5cf6" },
-                  { label: "Grading", height: "45%", color: "#06b6d4" },
-                  { label: "Meetings", height: "30%", color: "#10b981" },
-                ].map((bar, index) => (
-                  <div key={index} style={{ textAlign: "center", flex: 1 }}>
+                {workloadData.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "8px",
+                      flex: 1,
+                      maxWidth: "100px"
+                    }}
+                  >
+                    {/* Bar */}
                     <div
                       style={{
-                        height: bar.height,
-                        backgroundColor: bar.color,
+                        width: "40px",
+                        height: `${item.value * 1.6}px`, // Multiply by 1.6 to make bars taller
+                        backgroundColor: item.color,
                         borderRadius: "4px",
-                        marginBottom: "8px",
-                        minHeight: "20px",
+                        transition: "height 0.3s ease",
+                        marginBottom: "8px"
                       }}
-                    ></div>
+                    />
+                    {/* Label */}
                     <div
                       style={{
                         fontSize: "12px",
                         color: "#6b7280",
                         fontWeight: "500",
+                        textAlign: "center"
                       }}
                     >
-                      {bar.label}
+                      {item.label}
+                      <div style={{
+                        color: item.color,
+                        fontWeight: "600",
+                        marginTop: "4px"
+                      }}>
+                        {item.value}%
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -431,71 +479,97 @@ const TeacherProfile = () => {
                 marginBottom: "32px",
               }}
             >
-              <h3
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  color: "#1f2937",
-                  margin: "0 0 24px 0",
-                }}
-              >
+              <h3 style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                color: "#1f2937",
+                margin: "0 0 24px 0",
+              }}>
                 KPI Scores Over Time
               </h3>
 
               <div style={{ marginBottom: "24px" }}>
-                <div
-                  style={{
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontSize: "14px", color: "#6b7280", marginBottom: "8px" }}>
+                      Average KPI Score
+                    </div>
+                    <div style={{ fontSize: "36px", fontWeight: "700", color: "#1f2937" }}>
+                      {lastMonth}
+                    </div>
+                  </div>
+                  <div style={{
+                    padding: "8px 16px",
+                    backgroundColor: trend >= 0 ? "#f0fdf4" : "#fef2f2",
+                    borderRadius: "999px",
+                    color: trend >= 0 ? "#16a34a" : "#dc2626",
                     fontSize: "14px",
-                    color: "#6b7280",
-                    marginBottom: "8px",
-                  }}
-                >
-                  KPI Scores
-                </div>
-                <div
-                  style={{
-                    fontSize: "36px",
-                    fontWeight: "700",
-                    color: "#1f2937",
-                    marginBottom: "4px",
-                  }}
-                >
-                  85
-                </div>
-                <div
-                  style={{
-                    fontSize: "14px",
-                    color: "#6b7280",
-                  }}
-                >
-                  Last 12 Months
+                    fontWeight: "500",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}>
+                    {trend >= 0 ? "↑" : "↓"} {Math.abs(trend).toFixed(1)}% vs last month
+                  </div>
                 </div>
               </div>
 
-              {/* Simple Line Chart */}
-              <div style={{ height: "120px", position: "relative" }}>
-                <svg width="100%" height="100%" style={{ overflow: "visible" }}>
-                  <path
-                    d={createSVGPath(kpiDataPoints, 300, 80)}
-                    stroke="#3b82f6"
-                    strokeWidth="2"
-                    fill="none"
-                    style={{ transform: "translate(0, 10px)" }}
-                  />
-                </svg>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: "-5px",
-                    fontSize: "12px",
-                    color: "#6b7280",
-                  }}
-                >
-                  {kpiDataPoints.map((point, index) => (
-                    <span key={index}>{point.month}</span>
-                  ))}
-                </div>
+              {/* Recharts Line Chart */}
+              <div style={{ width: "100%", height: "300px" }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={kpiData}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis
+                      dataKey="month"
+                      stroke="#94a3b8"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke="#94a3b8"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      domain={[60, 100]}
+                      ticks={[60, 70, 80, 90, 100]}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="score"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      dot={{
+                        stroke: "#3b82f6",
+                        strokeWidth: 2,
+                        fill: "white",
+                        r: 4,
+                      }}
+                      activeDot={{
+                        stroke: "#3b82f6",
+                        strokeWidth: 2,
+                        fill: "#3b82f6",
+                        r: 6,
+                      }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
@@ -509,16 +583,41 @@ const TeacherProfile = () => {
                 marginBottom: "32px",
               }}
             >
-              <h3
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  color: "#1f2937",
-                  margin: "0 0 24px 0",
-                }}
-              >
-                Courses
-              </h3>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "24px"
+              }}>
+                <h3
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                    margin: "0",
+                  }}
+                >
+                  Courses
+                </h3>
+                <button
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#f3f4f6",
+                    border: "none",
+                    borderRadius: "6px",
+                    color: "#4b5563",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    ':hover': {
+                      backgroundColor: "#e5e7eb"
+                    }
+                  }}
+                >
+                  View All Courses
+                </button>
+              </div>
 
               <div style={{ overflowX: "auto" }}>
                 <table
@@ -530,42 +629,38 @@ const TeacherProfile = () => {
                 >
                   <thead>
                     <tr style={{ backgroundColor: "#f8fafc" }}>
-                      <th
-                        style={{
-                          padding: "12px 16px",
-                          textAlign: "left",
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          borderBottom: "1px solid #e2e8f0",
-                        }}
-                      >
-                        Course Name
-                      </th>
-                      <th
-                        style={{
-                          padding: "12px 16px",
-                          textAlign: "left",
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          borderBottom: "1px solid #e2e8f0",
-                        }}
-                      >
-                        Status
-                      </th>
-                      <th
-                        style={{
-                          padding: "12px 16px",
-                          textAlign: "left",
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          borderBottom: "1px solid #e2e8f0",
-                        }}
-                      >
-                        Progress
-                      </th>
+                      <th style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#374151",
+                        borderBottom: "1px solid #e2e8f0",
+                      }}>Course Name</th>
+                      <th style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#374151",
+                        borderBottom: "1px solid #e2e8f0",
+                      }}>Students</th>
+                      <th style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#374151",
+                        borderBottom: "1px solid #e2e8f0",
+                      }}>Status</th>
+                      <th style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#374151",
+                        borderBottom: "1px solid #e2e8f0",
+                      }}>Progress</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -574,21 +669,75 @@ const TeacherProfile = () => {
                         key={index}
                         style={{
                           borderBottom: index < courseData.length - 1 ? "1px solid #f1f5f9" : "none",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s",
+                          ':hover': {
+                            backgroundColor: "#f8fafc"
+                          }
                         }}
                       >
-                        <td style={{ padding: "16px", fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                          {course.name}
+                        <td style={{
+                          padding: "16px",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#1f2937"
+                        }}>
+                          <div style={{ marginBottom: "4px" }}>{course.name}</div>
+                          <div style={{
+                            fontSize: "12px",
+                            color: "#6b7280"
+                          }}>
+                            Last updated: {course.lastUpdated}
+                          </div>
                         </td>
-                        <td style={{ padding: "16px", fontSize: "14px", color: course.statusColor }}>
-                          {course.status}
+                        <td style={{
+                          padding: "16px",
+                          fontSize: "14px",
+                          color: "#4b5563"
+                        }}>
+                          {course.students} students
                         </td>
                         <td style={{ padding: "16px" }}>
+                          <span style={{
+                            padding: "4px 12px",
+                            borderRadius: "9999px",
+                            fontSize: "12px",
+                            fontWeight: "500",
+                            backgroundColor: `${course.statusColor}15`,
+                            color: course.statusColor
+                          }}>
+                            {course.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: "16px", width: "200px" }}>
+                          <div style={{
+                            marginBottom: "6px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center"
+                          }}>
+                            <span style={{
+                              fontSize: "12px",
+                              color: "#6b7280",
+                              fontWeight: "500"
+                            }}>
+                              {course.progress}%
+                            </span>
+                            {course.completion && (
+                              <span style={{
+                                fontSize: "12px",
+                                color: "#10b981"
+                              }}>
+                                Completed {course.completion}
+                              </span>
+                            )}
+                          </div>
                           <div
                             style={{
                               width: "100%",
-                              height: "8px",
+                              height: "6px",
                               backgroundColor: "#f1f5f9",
-                              borderRadius: "4px",
+                              borderRadius: "9999px",
                               overflow: "hidden",
                             }}
                           >
@@ -597,9 +746,10 @@ const TeacherProfile = () => {
                                 width: `${course.progress}%`,
                                 height: "100%",
                                 backgroundColor: course.statusColor,
-                                borderRadius: "4px",
+                                borderRadius: "9999px",
+                                transition: "width 0.3s ease"
                               }}
-                            ></div>
+                            />
                           </div>
                         </td>
                       </tr>

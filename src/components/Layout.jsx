@@ -2,18 +2,27 @@
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import {
+  RiHomeLine,
+  RiTeamLine,
+  RiBarChartLine,
+  RiBookOpenLine,
+  RiAwardLine,
+  RiLightbulbLine
+} from 'react-icons/ri';
 
 const Layout = ({ children, currentPage, onNavigate }) => {
   const navigate = useNavigate()
 
   const sidebarItems = [
-    { icon: "🏠", label: "Dashboard", page: "admin/dashboard" },
-    { icon: "👥", label: "Teacher Bandwidth Tracker", page: "admin/bandwidth" },
-    { icon: "📊", label: "Performance Dashboard", page: "admin/performance" },
-    { icon: "📚", label: "Integrated LMS", page: "admin/lms" },
-    { icon: "🏆", label: "Recognition & Rewards System", page: "admin/recognition" },
-    { icon: "💡", label: "AI-Powered Insights", page: "admin/insights" },
+    { icon: <RiHomeLine size={20} />, label: "Dashboard", page: "admin/dashboard" },
+    { icon: <RiTeamLine size={20} />, label: "Teacher Bandwidth Tracker", page: "admin/bandwidth" },
+    { icon: <RiBarChartLine size={20} />, label: "Performance Dashboard", page: "admin/performance" },
+    { icon: <RiBookOpenLine size={20} />, label: "Integrated LMS", page: "admin/lms" },
+    { icon: <RiAwardLine size={20} />, label: "Recognition & Rewards System", page: "admin/recognition" },
+    { icon: <RiLightbulbLine size={20} />, label: "AI-Powered Insights", page: "admin/insights" },
   ]
+
 
   const handleNavigation = (page) => {
     onNavigate(page)

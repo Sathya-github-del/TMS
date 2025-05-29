@@ -12,10 +12,10 @@ const AdminLogin = ({ onLogin }) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     if (username === 'Admin' && password === 'Admin@123') {
       onLogin();
       navigate('/admin/dashboard');
@@ -58,9 +58,9 @@ const AdminLogin = ({ onLogin }) => {
             justifyContent: 'center'
           }}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2Z" fill="#667EEA"/>
-              <path d="M12 6C8.686 6 6 8.686 6 12C6 15.314 8.686 18 12 18C15.314 18 18 15.314 18 12C18 8.686 15.314 6 12 6Z" fill="white"/>
-              <path d="M12 10C10.895 10 10 10.895 10 12C10 13.105 10.895 14 12 14C13.105 14 14 13.105 14 12C14 10.895 13.105 10 12 10Z" fill="#667EEA"/>
+              <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2Z" fill="#667EEA" />
+              <path d="M12 6C8.686 6 6 8.686 6 12C6 15.314 8.686 18 12 18C15.314 18 18 15.314 18 12C18 8.686 15.314 6 12 6Z" fill="white" />
+              <path d="M12 10C10.895 10 10 10.895 10 12C10 13.105 10.895 14 12 14C13.105 14 14 13.105 14 12C14 10.895 13.105 10 12 10Z" fill="#667EEA" />
             </svg>
           </div>
           <h1 style={{

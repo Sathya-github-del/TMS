@@ -2,7 +2,31 @@
 
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import {
+  LogOut,
+  AlertTriangle,
+  TrendingUp,
+  BrainCircuit,
+  Users,
+  Target,
+  ArrowRight,
+  ChartBar,
+  Lightbulb
+} from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Card Component
+const Card = ({ children, style = {}, ...props }) => (
+  <div style={{
+    backgroundColor: "white",
+    borderRadius: "12px",
+    padding: "24px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    ...style
+  }} {...props}>
+    {children}
+  </div>
+);
 
 const AIInsightsDashboard = () => {
   const navigate = useNavigate();
@@ -31,10 +55,51 @@ const AIInsightsDashboard = () => {
     navigate('/');
   };
 
+  // Add insight metrics
+  const insightMetrics = [
+    {
+      title: "At-Risk Teachers",
+      value: "3",
+      trend: "+1",
+      icon: <AlertTriangle size={24} />,
+      color: "#ef4444"
+    },
+    {
+      title: "Growth Opportunities",
+      value: "12",
+      trend: "+4",
+      icon: <TrendingUp size={24} />,
+      color: "#10b981"
+    },
+    {
+      title: "Staffing Needs",
+      value: "2",
+      icon: <Users size={24} />,
+      color: "#3b82f6"
+    },
+    {
+      title: "AI Recommendations",
+      value: "8",
+      trend: "+3",
+      icon: <BrainCircuit size={24} />,
+      color: "#8b5cf6"
+    }
+  ];
+
+  // Add teacher performance data
+  const performanceData = [
+    { month: 'Jan', score: 85 },
+    { month: 'Feb', score: 82 },
+    { month: 'Mar', score: 88 },
+    { month: 'Apr', score: 86 },
+    { month: 'May', score: 89 },
+    { month: 'Jun', score: 85 }
+  ];
+
   return (
-    <main style={{ padding: "32px" }}>
+    <main style={{ padding: "32px", backgroundColor: "#f8fafc" }}>
       {/* Header with Logout */}
-      <div style={{ 
+      <div style={{
         marginBottom: "32px",
         display: "flex",
         justifyContent: "space-between",
@@ -69,6 +134,137 @@ const AIInsightsDashboard = () => {
         </button>
       </div>
 
+      {/* Insight Metrics */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "24px",
+        marginBottom: "32px"
+      }}>
+        {insightMetrics.map((metric, index) => (
+          <Card key={index}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "16px"
+            }}>
+              <div style={{
+                padding: "12px",
+                borderRadius: "12px",
+                backgroundColor: `${metric.color}15`,
+                color: metric.color
+              }}>
+                {metric.icon}
+              </div>
+              {metric.trend && (
+                <div style={{
+                  padding: "4px 12px",
+                  borderRadius: "999px",
+                  backgroundColor: "#f0fdf4",
+                  color: "#16a34a",
+                  fontSize: "14px"
+                }}>
+                  {metric.trend}
+                </div>
+              )}
+            </div>
+            <h3 style={{
+              fontSize: "14px",
+              color: "#6b7280",
+              marginBottom: "8px"
+            }}>
+              {metric.title}
+            </h3>
+            <div style={{
+              fontSize: "24px",
+              fontWeight: "700",
+              color: "#1f2937"
+            }}>
+              {metric.value}
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Main Content Grid */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "24px",
+        marginBottom: "32px"
+      }}>
+        {/* Left Column - Performance Trends */}
+        <Card>
+          <h2 style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            color: "#1f2937",
+            marginBottom: "24px"
+          }}>
+            Performance Trends & Predictions
+          </h2>
+          <div style={{ height: "300px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={performanceData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="score"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  dot={{ fill: "#3b82f6", strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        {/* Right Column - Quick Actions */}
+        <Card>
+          <h2 style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            color: "#1f2937",
+            marginBottom: "24px"
+          }}>
+            Quick Actions
+          </h2>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px"
+          }}>
+            {[
+              { icon: <Target size={20} />, label: "View At-Risk Teachers" },
+              { icon: <ChartBar size={20} />, label: "Review Performance Metrics" },
+              { icon: <Lightbulb size={20} />, label: "Get AI Recommendations" }
+            ].map((action, index) => (
+              <button key={index} style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "12px",
+                backgroundColor: "#f8fafc",
+                border: "none",
+                borderRadius: "8px",
+                color: "#1f2937",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                fontSize: "14px",
+                fontWeight: "500"
+              }}>
+                {action.icon}
+                {action.label}
+                <ArrowRight size={16} style={{ marginLeft: "auto" }} />
+              </button>
+            ))}
+          </div>
+        </Card>
+      </div>
+
       {/* Burnout Risk Section */}
       <div style={{ marginBottom: "48px" }}>
         <h2
@@ -81,7 +277,6 @@ const AIInsightsDashboard = () => {
         >
           Burnout Risk
         </h2>
-
         <div
           style={{
             backgroundColor: "white",
@@ -153,42 +348,85 @@ const AIInsightsDashboard = () => {
             marginBottom: "24px",
           }}
         >
-          {/* Placeholder suggestion boxes */}
-          {[1, 2].map((item) => (
-            <div
-              key={item}
+          {/* Current Role Dropdown */}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "20px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <label
               style={{
-                backgroundColor: "white",
-                borderRadius: "12px",
-                padding: "20px",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                border: "2px dashed #e2e8f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: "60px",
+                display: "block",
+                marginBottom: "8px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#4b5563",
               }}
             >
-              <div
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  borderRadius: "50%",
-                  border: "2px solid #d1d5db",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#9ca3af",
-                }}
-              >
-                ⌄
-              </div>
-            </div>
-          ))}
+              Current Role
+            </label>
+            <select
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                border: "1px solid #d1d5db",
+                fontSize: "14px",
+                color: "#1f2937",
+              }}
+            >
+              <option value="">Select current role</option>
+              <option value="teacher">Teacher</option>
+              <option value="seniorTeacher">Senior Teacher</option>
+              <option value="departmentHead">Department Head</option>
+            </select>
+          </div>
+
+          {/* Career Interest Dropdown */}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "20px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#4b5563",
+              }}
+            >
+              Career Interest
+            </label>
+            <select
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                border: "1px solid #d1d5db",
+                fontSize: "14px",
+                color: "#1f2937",
+              }}
+            >
+              <option value="">Select area of interest</option>
+              <option value="curriculum">Curriculum Development</option>
+              <option value="administration">Administration</option>
+              <option value="coaching">Teacher Coaching</option>
+              <option value="technology">Educational Technology</option>
+            </select>
+          </div>
         </div>
 
-        {/* Detailed Career Suggestion */}
+        {/* Detailed Career Suggestion - Made Clickable */}
         <div
+          onClick={() => alert("Opening detailed career path information")}
           style={{
             backgroundColor: "white",
             borderRadius: "12px",
@@ -198,6 +436,11 @@ const AIInsightsDashboard = () => {
             alignItems: "flex-start",
             gap: "24px",
             flexWrap: "wrap",
+            cursor: "pointer",
+            transition: "transform 0.2s",
+            ':hover': {
+              transform: "scale(1.01)",
+            }
           }}
         >
           <div style={{ flex: 1, minWidth: "300px" }}>
@@ -301,7 +544,7 @@ const AIInsightsDashboard = () => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default AIInsightsDashboard
+export default AIInsightsDashboard;

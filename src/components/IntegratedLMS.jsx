@@ -2,11 +2,111 @@
 
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import {
+  LogOut,
+  Book,
+  Users,
+  Calendar,
+  Search,
+  Plus,
+  ChevronDown,
+  BarChart2,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Briefcase
+} from 'lucide-react';
 
-const LMSDashboard = () => {
+// Card Component
+const Card = ({ children, style = {}, ...props }) => (
+  <div
+    style={{
+      backgroundColor: "white",
+      borderRadius: "12px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      ...style
+    }}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+const IntegratedLMS = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("Integrated LMS")
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedGrade, setSelectedGrade] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [workloadStats] = useState({
+    overworked: 3,
+    optimal: 12,
+    available: 5
+  });
+
+  // Add course analytics data
+  const courseAnalytics = {
+    totalEnrollments: 245,
+    completionRate: 78,
+    averageProgress: 65,
+    activeUsers: 180,
+    averageWorkload: 5.2
+  };
+
+  // Analytics Stats Data
+  const analyticsStats = [
+    {
+      title: "Average Workload",
+      value: `${courseAnalytics.averageWorkload.toFixed(1)}h`,
+      icon: <Clock size={24} />,
+      color: "#3b82f6",
+      bgColor: "#eff6ff"
+    },
+    {
+      title: "Overworked Teachers",
+      value: workloadStats.overworked,
+      icon: <AlertCircle size={24} />,
+      color: "#ef4444",
+      bgColor: "#fef2f2"
+    },
+    {
+      title: "Optimal Workload",
+      value: workloadStats.optimal,
+      icon: <BarChart2 size={24} />,
+      color: "#10b981",
+      bgColor: "#f0fdf4"
+    },
+    {
+      title: "Available Capacity",
+      value: workloadStats.available,
+      icon: <Briefcase size={24} />,
+      color: "#f59e0b",
+      bgColor: "#fefce8"
+    }
+  ];
+
+  // Filter Options
+  const filterOptions = [
+    {
+      label: "Subject",
+      value: selectedSubject,
+      setter: setSelectedSubject,
+      options: ["Mathematics", "Science", "English", "History", "Art"]
+    },
+    {
+      label: "Grade",
+      value: selectedGrade,
+      setter: setSelectedGrade,
+      options: ["Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10"]
+    },
+    {
+      label: "Status",
+      value: selectedStatus,
+      setter: setSelectedStatus,
+      options: ["Optimal", "Overworked", "Available"]
+    }
+  ];
 
   const courseData = [
     {
@@ -106,19 +206,28 @@ const LMSDashboard = () => {
     },
   ]
 
+
+  // Add course categories
+  const categories = [
+    { id: 'all', label: 'All Courses' },
+    { id: 'inProgress', label: 'In Progress' },
+    { id: 'completed', label: 'Completed' },
+    { id: 'upcoming', label: 'Upcoming' }
+  ];
+
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     navigate('/');
   };
 
   return (
-    <main style={{ padding: "32px" }}>
-      {/* Header with Logout */}
-      <div style={{ 
-        marginBottom: "32px",
+    <main style={{ padding: "32px", backgroundColor: "#f8fafc" }}>
+      {/* Header Section */}
+      <div style={{
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-start"
+        alignItems: "center",
+        marginBottom: "32px"
       }}>
         <div>
           <h1 style={{
@@ -158,72 +267,171 @@ const LMSDashboard = () => {
         </button>
       </div>
 
-      {/* Course Catalog */}
-      <div style={{ marginBottom: "48px" }}>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "600",
-            color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Course Catalog
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "24px",
-          }}
-        >
-          {courseData.map((course) => (
-            <div
-              key={course.id}
-              style={{
-                backgroundColor: course.color,
+      {/* Analytics Stats Cards */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gap: "24px",
+        marginBottom: "32px"
+      }}>
+        {analyticsStats.map((stat, index) => (
+          <Card key={index} style={{ padding: "24px" }}>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px"
+            }}>
+              <div style={{
+                padding: "12px",
                 borderRadius: "12px",
-                padding: "24px",
-                color: course.color === "#2d3748" ? "white" : "#1f2937",
-                cursor: "pointer",
-                transition: "transform 0.2s",
-                minHeight: "200px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)"
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = "translateY(0)"
-              }}
-            >
-              <div>
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    margin: "0 0 8px 0",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  {course.title}
-                </h3>
+                backgroundColor: `${stat.color}15`,
+                color: stat.color
+              }}>
+                {stat.icon}
               </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  opacity: 0.8,
-                }}
-              >
-                {course.duration}
+              <div>
+                <div style={{ fontSize: "14px", color: "#6b7280" }}>{stat.title}</div>
+                <div style={{ fontSize: "24px", fontWeight: "700", color: "#1f2937" }}>{stat.value}</div>
               </div>
             </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Enhanced Search and Filters */}
+      <div style={{
+        backgroundColor: "white",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        marginBottom: "24px"
+      }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto auto auto",
+          gap: "16px",
+          alignItems: "center"
+        }}>
+          {/* Search Input */}
+          <div style={{
+            position: "relative",
+            width: "100%"
+          }}>
+            <input
+              type="text"
+              placeholder="Search courses..."
+              style={{
+                width: "100%",
+                padding: "10px 16px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                fontSize: "14px",
+                color: "#1f2937",
+                backgroundColor: "white",
+                outline: "none",
+                transition: "border-color 0.2s"
+              }}
+            />
+            <div style={{
+              position: "absolute",
+              top: "50%",
+              left: "12px",
+              transform: "translateY(-50%)",
+              pointerEvents: "none"
+            }}>
+              <Search size={16} color="#6b7280" />
+            </div>
+          </div>
+
+          {/* Filter Dropdowns */}
+          {filterOptions.map((filter, index) => (
+            <select
+              key={index}
+              value={filter.value}
+              onChange={(e) => filter.setter(e.target.value)}
+              style={{
+                padding: "10px 16px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                fontSize: "14px",
+                minWidth: "150px",
+                color: "#1f2937",
+                backgroundColor: "white"
+              }}
+            >
+              <option value="">{filter.label}</option>
+              {filter.options.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
           ))}
         </div>
       </div>
+
+      {/* Course Management Section */}
+      <Card style={{ marginBottom: "32px" }}>
+        <div style={{ padding: "24px", borderBottom: "1px solid #e5e7eb" }}>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
+            <h2 style={{ fontSize: "20px", fontWeight: "600", margin: 0 }}>Course Management</h2>
+            <button style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 16px",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}>
+              <Plus size={16} />
+              Add Course
+            </button>
+          </div>
+        </div>
+
+        {/* Course Categories */}
+        <div style={{ padding: "16px 24px", borderBottom: "1px solid #e5e7eb" }}>
+          <div style={{
+            display: "flex",
+            gap: "16px",
+            overflowX: "auto"
+          }}>
+            {categories.map(category => (
+              <button
+                key={category.id}
+                style={{
+                  padding: "8px 16px",
+                  border: "none",
+                  borderRadius: "6px",
+                  backgroundColor: category.id === 'all' ? "#3b82f6" : "#f3f4f6",
+                  color: category.id === 'all' ? "white" : "#6b7280",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Course Grid */}
+        <div style={{
+          padding: "24px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: "24px"
+        }}>
+          {courseData.map(course => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
+      </Card>
 
       {/* Teacher Progress */}
       <div style={{ marginBottom: "48px" }}>
@@ -456,7 +664,66 @@ const LMSDashboard = () => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default LMSDashboard
+// CourseCard Component
+const CourseCard = ({ course }) => (
+  <Card style={{
+    overflow: "hidden",
+    transition: "transform 0.2s",
+    cursor: "pointer",
+    "&:hover": {
+      transform: "translateY(-4px)"
+    }
+  }}>
+    <div style={{
+      height: "160px",
+      backgroundColor: course.color,
+      backgroundImage: `url(${course.image})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center"
+    }} />
+    <div style={{ padding: "16px" }}>
+      <h3 style={{
+        fontSize: "16px",
+        fontWeight: "600",
+        marginBottom: "8px"
+      }}>
+        {course.title}
+      </h3>
+      <p style={{
+        fontSize: "14px",
+        color: "#6b7280",
+        marginBottom: "16px"
+      }}>
+        {course.description}
+      </p>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between"
+      }}>
+        <span style={{
+          fontSize: "14px",
+          color: "#6b7280"
+        }}>
+          {course.duration}
+        </span>
+        <button style={{
+          padding: "6px 12px",
+          backgroundColor: "#f3f4f6",
+          border: "none",
+          borderRadius: "6px",
+          fontSize: "14px",
+          color: "#4b5563",
+          cursor: "pointer"
+        }}>
+          View Course
+        </button>
+      </div>
+    </div>
+  </Card>
+);
+
+export default IntegratedLMS;
