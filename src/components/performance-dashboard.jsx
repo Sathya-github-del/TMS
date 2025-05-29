@@ -10,6 +10,7 @@ const PerformanceDashboard = () => {
   const [expandedCard, setExpandedCard] = useState(null);
   const [sortBy, setSortBy] = useState('rating');
   const [filterDepartment, setFilterDepartment] = useState('all');
+  const [dateRange, setDateRange] = useState('all');
 
   const performanceMetrics = [
     {
@@ -43,7 +44,7 @@ const PerformanceDashboard = () => {
   ];
 
   const trendsData = [
-    { month: 'Jan', rating: 4.2, reviews: 95 },
+    { month: 'Jan', rating: 3.2, reviews: 95 },
     { month: 'Feb', rating: 4.3, reviews: 110 },
     { month: 'Mar', rating: 4.5, reviews: 125 },
     { month: 'Apr', rating: 4.6, reviews: 140 },
@@ -55,7 +56,9 @@ const PerformanceDashboard = () => {
     {
       id: 1,
       name: "Ms. Clara Bennett",
-      rating: 4.8,
+      department: "mathematics", // Add department
+      lastUpdated: "2024-01-15", // Update date format
+      rating: 3.5,
       reviews: 120,
       image: "https://placehold.co/600x400",
       metrics: {
@@ -68,6 +71,8 @@ const PerformanceDashboard = () => {
     {
       id: 2,
       name: "Mr. James Carter",
+      department: "science",
+      lastUpdated: "2024-02-10",
       rating: 4.6,
       reviews: 98,
       image: "https://placehold.co/600x400",
@@ -81,6 +86,8 @@ const PerformanceDashboard = () => {
     {
       id: 3,
       name: "Mrs. Olivia Thompson",
+      department: "english",
+      lastUpdated: "2024-03-05",
       rating: 4.9,
       reviews: 150,
       image: "https://placehold.co/600x400",
@@ -94,6 +101,8 @@ const PerformanceDashboard = () => {
     {
       id: 4,
       name: "Mr. Liam Parker",
+      department: "history",
+      lastUpdated: "2024-01-20",
       rating: 4.7,
       reviews: 110,
       image: "https://placehold.co/600x400",
@@ -107,6 +116,8 @@ const PerformanceDashboard = () => {
     {
       id: 5,
       name: "Ms. Ava Martinez",
+      department: "art",
+      lastUpdated: "2024-02-15",
       rating: 4.5,
       reviews: 85,
       image: "https://placehold.co/600x400",
@@ -120,6 +131,8 @@ const PerformanceDashboard = () => {
     {
       id: 6,
       name: "Mr. Ethan Wright",
+      department: "mathematics",
+      lastUpdated: "2024-03-10",
       rating: 4.6,
       reviews: 101,
       image: "https://placehold.co/600x400",
@@ -133,6 +146,8 @@ const PerformanceDashboard = () => {
     {
       id: 7,
       name: "Mrs. Sophia Lewis",
+      department: "science",
+      lastUpdated: "2024-01-25",
       rating: 4.8,
       reviews: 130,
       image: "https://placehold.co/600x400",
@@ -146,6 +161,8 @@ const PerformanceDashboard = () => {
     {
       id: 8,
       name: "Mr. Noah Walker",
+      department: "english",
+      lastUpdated: "2024-02-20",
       rating: 4.7,
       reviews: 115,
       image: "https://placehold.co/600x400",
@@ -159,6 +176,8 @@ const PerformanceDashboard = () => {
     {
       id: 9,
       name: "Ms. Mia Robinson",
+      department: "history",
+      lastUpdated: "2024-03-15",
       rating: 4.4,
       reviews: 78,
       image: "https://placehold.co/600x400",
@@ -172,6 +191,8 @@ const PerformanceDashboard = () => {
     {
       id: 10,
       name: "Mr. Lucas Scott",
+      department: "art",
+      lastUpdated: "2024-01-30",
       rating: 4.5,
       reviews: 90,
       image: "https://placehold.co/600x400",
@@ -185,6 +206,8 @@ const PerformanceDashboard = () => {
     {
       id: 11,
       name: "Mrs. Emma Hill",
+      department: "mathematics",
+      lastUpdated: "2024-02-05",
       rating: 4.9,
       reviews: 145,
       image: "https://placehold.co/600x400",
@@ -205,6 +228,48 @@ const PerformanceDashboard = () => {
 
   const toggleCardExpand = (teacherId) => {
     setExpandedCard(expandedCard === teacherId ? null : teacherId);
+  };
+
+  // Add sorting function
+  const getSortedTeachers = () => {
+    return [...teacherData].sort((a, b) => {
+      switch (sortBy) {
+        case 'rating':
+          return b.rating - a.rating;
+        case 'reviews':
+          return b.reviews - a.reviews;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+  };
+
+  // Replace the existing getFilteredAndSortedTeachers function
+  const getFilteredAndSortedTeachers = () => {
+    const now = new Date();
+    const getDateFromRange = (range) => {
+      switch (range) {
+        case 'week':
+          return new Date(now - 7 * 24 * 60 * 60 * 1000);
+        case 'month':
+          return new Date(now.setMonth(now.getMonth() - 1));
+        case 'quarter':
+          return new Date(now.setMonth(now.getMonth() - 3));
+        case 'year':
+          return new Date(now.setFullYear(now.getFullYear() - 1));
+        default:
+          return new Date(0);
+      }
+    };
+
+    return getSortedTeachers().filter(teacher => {
+      const meetsDepartmentCriteria = filterDepartment === 'all' || teacher.department === filterDepartment;
+      const meetsDateCriteria = dateRange === 'all' || new Date(teacher.lastUpdated) >= getDateFromRange(dateRange);
+
+      return meetsDepartmentCriteria && meetsDateCriteria;
+    });
   };
 
   return (
@@ -324,41 +389,95 @@ const PerformanceDashboard = () => {
 
       {/* Filters and Sorting */}
       <div style={{
-        display: "flex",
-        gap: "1rem",
+        backgroundColor: "white",
+        padding: "1rem",
+        borderRadius: "0.75rem",
         marginBottom: "1.5rem",
-        flexWrap: "wrap"
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
       }}>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          style={{
-            padding: "0.5rem 1rem",
-            borderRadius: "0.375rem",
-            border: "1px solid #e5e7eb",
-            fontSize: "0.875rem"
-          }}
-        >
-          <option value="rating">Sort by Rating</option>
-          <option value="reviews">Sort by Reviews</option>
-          <option value="name">Sort by Name</option>
-        </select>
+        <div style={{
+          display: "flex",
+          gap: "1rem",
+          flexWrap: "wrap",
+          alignItems: "center"
+        }}>
+          <div style={{ flex: "1", minWidth: "200px" }}>
+            <label style={{
+              display: "block",
+              fontSize: "0.875rem",
+              color: "#4b5563",
+              marginBottom: "0.5rem"
+            }}>Sort By</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #e5e7eb",
+                fontSize: "0.875rem"
+              }}
+            >
+              <option value="rating">Rating (High to Low)</option>
+              <option value="reviews">Reviews Count</option>
+              <option value="name">Teacher Name</option>
+            </select>
+          </div>
 
-        <select
-          value={filterDepartment}
-          onChange={(e) => setFilterDepartment(e.target.value)}
-          style={{
-            padding: "0.5rem 1rem",
-            borderRadius: "0.375rem",
-            border: "1px solid #e5e7eb",
-            fontSize: "0.875rem"
-          }}
-        >
-          <option value="all">All Departments</option>
-          <option value="science">Science</option>
-          <option value="math">Mathematics</option>
-          <option value="english">English</option>
-        </select>
+          <div style={{ flex: "1", minWidth: "200px" }}>
+            <label style={{
+              display: "block",
+              fontSize: "0.875rem",
+              color: "#4b5563",
+              marginBottom: "0.5rem"
+            }}>Department</label>
+            <select
+              value={filterDepartment}
+              onChange={(e) => setFilterDepartment(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #e5e7eb",
+                fontSize: "0.875rem"
+              }}
+            >
+              <option value="all">All Departments</option>
+              <option value="science">Science</option>
+              <option value="math">Mathematics</option>
+              <option value="english">English</option>
+              <option value="history">History</option>
+              <option value="art">Art</option>
+            </select>
+          </div>
+
+          <div style={{ flex: "1", minWidth: "200px" }}>
+            <label style={{
+              display: "block",
+              fontSize: "0.875rem",
+              color: "#4b5563",
+              marginBottom: "0.5rem"
+            }}>Time Period</label>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #e5e7eb",
+                fontSize: "0.875rem"
+              }}
+            >
+              <option value="all">All Time</option>
+              <option value="week">Past Week</option>
+              <option value="month">Past Month</option>
+              <option value="quarter">Past Quarter</option>
+              <option value="year">Past Year</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Performance Trends Chart */}
@@ -392,15 +511,13 @@ const PerformanceDashboard = () => {
       </div>
 
       {/* Teacher Cards Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "1.5rem",
-          marginBottom: "2rem",
-        }}
-      >
-        {teacherData.map((teacher) => (
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+        gap: "1.5rem",
+        marginBottom: "2rem",
+      }}>
+        {getFilteredAndSortedTeachers().map((teacher) => (
           <div
             key={teacher.id}
             style={{

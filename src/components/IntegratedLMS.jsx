@@ -7,7 +7,6 @@ import {
   Book,
   Users,
   Calendar,
-  Search,
   Plus,
   ChevronDown,
   BarChart2,
@@ -35,7 +34,6 @@ const Card = ({ children, style = {}, ...props }) => (
 const IntegratedLMS = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("Integrated LMS")
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -44,6 +42,7 @@ const IntegratedLMS = () => {
     optimal: 12,
     available: 5
   });
+  const [activeTab, setActiveTab] = useState('all');
 
   // Add course analytics data
   const courseAnalytics = {
@@ -108,6 +107,7 @@ const IntegratedLMS = () => {
     }
   ];
 
+  // Update courseData to include status
   const courseData = [
     {
       id: 1,
@@ -116,6 +116,10 @@ const IntegratedLMS = () => {
       color: "#a7c4bc",
       image: "/placeholder.svg?height=200&width=300",
       description: "Learn effective classroom management techniques",
+      status: "in_progress",
+      progress: 65,
+      startDate: "2024-01-15",
+      endDate: "2024-02-12"
     },
     {
       id: 2,
@@ -124,6 +128,9 @@ const IntegratedLMS = () => {
       color: "#2d3748",
       image: "/placeholder.svg?height=200&width=300",
       description: "Explore modern teaching approaches",
+      status: "completed",
+      progress: 100,
+      completionDate: "2024-01-10"
     },
     {
       id: 3,
@@ -132,6 +139,9 @@ const IntegratedLMS = () => {
       color: "#2d5a5a",
       image: "/placeholder.svg?height=200&width=300",
       description: "Improve student-teacher communication",
+      status: "upcoming",
+      startDate: "2024-03-01",
+      endDate: "2024-03-21"
     },
     {
       id: 4,
@@ -140,24 +150,68 @@ const IntegratedLMS = () => {
       color: "#b8d4b8",
       image: "/placeholder.svg?height=200&width=300",
       description: "Integrate technology in teaching",
+      status: "in_progress",
+      progress: 45,
+      startDate: "2024-02-01",
+      endDate: "2024-03-15"
     },
-  ]
+    {
+      id: 5,
+      title: "Digital Learning Tools",
+      duration: "3 weeks",
+      color: "#7c3aed",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Master modern digital teaching tools",
+      status: "upcoming",
+      startDate: "2024-03-01",
+      endDate: "2024-03-21"
+    },
+    {
+      id: 6,
+      title: "Student Assessment Strategies",
+      duration: "4 weeks",
+      color: "#0891b2",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Learn effective assessment methods",
+      status: "completed",
+      progress: 100,
+      completionDate: "2024-01-10"
+    }
+  ];
 
+  // Filter courses based on active tab
+  const getFilteredCourses = () => {
+    switch (activeTab) {
+      case 'inProgress':
+        return courseData.filter(course => course.status === 'in_progress');
+      case 'completed':
+        return courseData.filter(course => course.status === 'completed');
+      case 'upcoming':
+        return courseData.filter(course => course.status === 'upcoming');
+      default:
+        return courseData;
+    }
+  };
+
+  // Update teacherProgress data to include recommended courses
   const teacherProgress = [
     {
       name: "Ava Bennett",
       coursesCompleted: 3,
       badges: "Classroom Management, Communication",
+      recommendedCourses: "Advanced Teaching Methods, Digital Learning",
     },
     {
       name: "Liam Carter",
       coursesCompleted: 2,
       badges: "Advanced Teaching",
+      recommendedCourses: "Communication Skills, Student Assessment",
     },
     {
       name: "Chloe Harper",
       coursesCompleted: 4,
       badges: "All Courses",
+      recommendedCourses: "Leadership in Education",
     },
   ]
 
@@ -191,18 +245,36 @@ const IntegratedLMS = () => {
       status: "Completed",
       icon: "✓",
       color: "#10b981",
+      teachers: [
+        "Ms. Clara Bennett",
+        "Mr. James Carter",
+        "Mrs. Sophia Lewis"
+      ],
+      completion: 100 // Add completion percentage
     },
     {
       title: "Advanced Teaching Methodologies",
       status: "In Progress",
       icon: "⏱",
       color: "#f59e0b",
+      teachers: [
+        "Mrs. Olivia Thompson",
+        "Mr. Liam Parker",
+        "Mr. Ethan Wright"
+      ],
+      completion: 65 // Add completion percentage
     },
     {
       title: "Effective Communication with Students",
       status: "Not Started",
       icon: "✕",
       color: "#ef4444",
+      teachers: [
+        "Ms. Ava Martinez",
+        "Mr. Noah Walker",
+        "Ms. Mia Robinson"
+      ],
+      completion: 0 // Add completion percentage
     },
   ]
 
@@ -298,76 +370,6 @@ const IntegratedLMS = () => {
         ))}
       </div>
 
-      {/* Enhanced Search and Filters */}
-      <div style={{
-        backgroundColor: "white",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        marginBottom: "24px"
-      }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto auto auto",
-          gap: "16px",
-          alignItems: "center"
-        }}>
-          {/* Search Input */}
-          <div style={{
-            position: "relative",
-            width: "100%"
-          }}>
-            <input
-              type="text"
-              placeholder="Search courses..."
-              style={{
-                width: "100%",
-                padding: "10px 16px",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px",
-                color: "#1f2937",
-                backgroundColor: "white",
-                outline: "none",
-                transition: "border-color 0.2s"
-              }}
-            />
-            <div style={{
-              position: "absolute",
-              top: "50%",
-              left: "12px",
-              transform: "translateY(-50%)",
-              pointerEvents: "none"
-            }}>
-              <Search size={16} color="#6b7280" />
-            </div>
-          </div>
-
-          {/* Filter Dropdowns */}
-          {filterOptions.map((filter, index) => (
-            <select
-              key={index}
-              value={filter.value}
-              onChange={(e) => filter.setter(e.target.value)}
-              style={{
-                padding: "10px 16px",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px",
-                minWidth: "150px",
-                color: "#1f2937",
-                backgroundColor: "white"
-              }}
-            >
-              <option value="">{filter.label}</option>
-              {filter.options.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          ))}
-        </div>
-      </div>
-
       {/* Course Management Section */}
       <Card style={{ marginBottom: "32px" }}>
         <div style={{ padding: "24px", borderBottom: "1px solid #e5e7eb" }}>
@@ -404,14 +406,16 @@ const IntegratedLMS = () => {
             {categories.map(category => (
               <button
                 key={category.id}
+                onClick={() => setActiveTab(category.id)}
                 style={{
                   padding: "8px 16px",
                   border: "none",
                   borderRadius: "6px",
-                  backgroundColor: category.id === 'all' ? "#3b82f6" : "#f3f4f6",
-                  color: category.id === 'all' ? "white" : "#6b7280",
+                  backgroundColor: category.id === activeTab ? "#3b82f6" : "#f3f4f6",
+                  color: category.id === activeTab ? "white" : "#6b7280",
                   cursor: "pointer",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  transition: "all 0.2s ease"
                 }}
               >
                 {category.label}
@@ -420,15 +424,21 @@ const IntegratedLMS = () => {
           </div>
         </div>
 
-        {/* Course Grid */}
+        {/* Course Grid - Update to use filtered courses */}
         <div style={{
           padding: "24px",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
           gap: "24px"
         }}>
-          {courseData.map(course => (
-            <CourseCard key={course.id} course={course} />
+          {getFilteredCourses().map(course => (
+            <CourseCard 
+              key={course.id} 
+              course={course}
+              showProgress={course.status === 'in_progress'}
+              showStartDate={course.status === 'upcoming'}
+              showCompletionDate={course.status === 'completed'}
+            />
           ))}
         </div>
       </Card>
@@ -500,6 +510,18 @@ const IntegratedLMS = () => {
                   >
                     Badges/Certificates
                   </th>
+                  <th
+                    style={{
+                      padding: "16px 24px",
+                      textAlign: "left",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#374151",
+                      borderBottom: "1px solid #e2e8f0",
+                    }}
+                  >
+                    Recommended Courses
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -516,7 +538,12 @@ const IntegratedLMS = () => {
                     <td style={{ padding: "16px 24px", fontSize: "14px", color: "#6b7280" }}>
                       {teacher.coursesCompleted}
                     </td>
-                    <td style={{ padding: "16px 24px", fontSize: "14px", color: "#3b82f6" }}>{teacher.badges}</td>
+                    <td style={{ padding: "16px 24px", fontSize: "14px", color: "#3b82f6" }}>
+                      {teacher.badges}
+                    </td>
+                    <td style={{ padding: "16px 24px", fontSize: "14px", color: "#10b981" }}>
+                      {teacher.recommendedCourses}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -524,71 +551,6 @@ const IntegratedLMS = () => {
           </div>
         </div>
       </div>
-
-      {/* Recommended Courses */}
-      <div style={{ marginBottom: "48px" }}>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "600",
-            color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Recommended Courses
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "24px",
-          }}
-        >
-          {recommendedCourses.map((course) => (
-            <div
-              key={course.id}
-              style={{
-                backgroundColor: course.color,
-                borderRadius: "12px",
-                padding: "20px",
-                color: course.color === "#2d3748" || course.color === "#4a5568" ? "white" : "#1f2937",
-                cursor: "pointer",
-                transition: "transform 0.2s",
-                minHeight: "150px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)"
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = "translateY(0)"
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  margin: "0 0 8px 0",
-                }}
-              >
-                {course.title}
-              </h3>
-              <div
-                style={{
-                  fontSize: "14px",
-                  opacity: 0.8,
-                }}
-              >
-                {course.duration}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Certification Timeline */}
       <div>
         <h2
@@ -615,7 +577,6 @@ const IntegratedLMS = () => {
               key={index}
               style={{
                 display: "flex",
-                alignItems: "center",
                 gap: "16px",
                 padding: "16px 0",
                 borderBottom: index < certificationTimeline.length - 1 ? "1px solid #f1f5f9" : "none",
@@ -639,24 +600,63 @@ const IntegratedLMS = () => {
                 {item.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    color: "#1f2937",
-                    marginBottom: "4px",
-                  }}
-                >
+                <div style={{
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  color: "#1f2937",
+                  marginBottom: "4px",
+                }}>
                   {item.title}
                 </div>
-                <div
-                  style={{
-                    fontSize: "14px",
-                    color: item.color,
-                    fontWeight: "500",
-                  }}
-                >
+                <div style={{
+                  fontSize: "14px",
+                  color: item.color,
+                  fontWeight: "500",
+                  marginBottom: "8px",
+                }}>
                   {item.status}
+                </div>
+                {/* Add mini progress bar */}
+                <div style={{
+                  width: "100%",
+                  height: "4px",
+                  backgroundColor: "#f3f4f6",
+                  borderRadius: "2px",
+                  marginBottom: "8px",
+                  overflow: "hidden"
+                }}>
+                  <div style={{
+                    width: `${item.completion}%`,
+                    height: "100%",
+                    backgroundColor: item.color,
+                    transition: "width 0.3s ease"
+                  }} />
+                </div>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "8px"
+                }}>
+                  <span style={{
+                    fontSize: "12px",
+                    color: "#6b7280"
+                  }}>
+                    Completion
+                  </span>
+                  <span style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    color: item.color
+                  }}>
+                    {item.completion}%
+                  </span>
+                </div>
+                <div style={{
+                  fontSize: "14px",
+                  color: "#6b7280",
+                }}>
+                  Teachers: {item.teachers.join(", ")}
                 </div>
               </div>
             </div>
@@ -668,7 +668,7 @@ const IntegratedLMS = () => {
 };
 
 // CourseCard Component
-const CourseCard = ({ course }) => (
+const CourseCard = ({ course, showProgress, showStartDate, showCompletionDate }) => (
   <Card style={{
     overflow: "hidden",
     transition: "transform 0.2s",
@@ -699,6 +699,42 @@ const CourseCard = ({ course }) => (
       }}>
         {course.description}
       </p>
+
+      {showProgress && (
+        <div style={{ marginBottom: "12px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+            <span style={{ fontSize: "12px", color: "#6b7280" }}>Progress</span>
+            <span style={{ fontSize: "12px", color: "#3b82f6" }}>{course.progress}%</span>
+          </div>
+          <div style={{
+            width: "100%",
+            height: "4px",
+            backgroundColor: "#f3f4f6",
+            borderRadius: "2px",
+            overflow: "hidden"
+          }}>
+            <div style={{
+              width: `${course.progress}%`,
+              height: "100%",
+              backgroundColor: "#3b82f6",
+              transition: "width 0.3s ease"
+            }} />
+          </div>
+        </div>
+      )}
+
+      {showStartDate && (
+        <div style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>
+          Starts: {new Date(course.startDate).toLocaleDateString()}
+        </div>
+      )}
+
+      {showCompletionDate && (
+        <div style={{ fontSize: "14px", color: "#10b981", marginBottom: "12px" }}>
+          Completed: {new Date(course.completionDate).toLocaleDateString()}
+        </div>
+      )}
+
       <div style={{
         display: "flex",
         alignItems: "center",

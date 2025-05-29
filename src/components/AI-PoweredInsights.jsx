@@ -11,7 +11,9 @@ import {
   Target,
   ArrowRight,
   ChartBar,
-  Lightbulb
+  Lightbulb,
+  Activity,
+  Brain
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -31,6 +33,7 @@ const Card = ({ children, style = {}, ...props }) => (
 const AIInsightsDashboard = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("AI-Powered Insights")
+  const [activeQuickAction, setActiveQuickAction] = useState(null);
 
   const sidebarItems = [
     { icon: "🏠", label: "Dashboard", page: "dashboard" },
@@ -55,34 +58,104 @@ const AIInsightsDashboard = () => {
     navigate('/');
   };
 
-  // Add insight metrics
+  // Enhanced insight metrics with educational focus
   const insightMetrics = [
     {
-      title: "At-Risk Teachers",
-      value: "3",
-      trend: "+1",
-      icon: <AlertTriangle size={24} />,
-      color: "#ef4444"
-    },
-    {
-      title: "Growth Opportunities",
-      value: "12",
-      trend: "+4",
-      icon: <TrendingUp size={24} />,
-      color: "#10b981"
-    },
-    {
-      title: "Staffing Needs",
-      value: "2",
-      icon: <Users size={24} />,
-      color: "#3b82f6"
-    },
-    {
-      title: "AI Recommendations",
-      value: "8",
-      trend: "+3",
+      title: "Teaching Quality Score",
+      value: "92%",
+      trend: "+5%",
       icon: <BrainCircuit size={24} />,
-      color: "#8b5cf6"
+      color: "#8b5cf6",
+      detail: "Based on student outcomes and peer reviews",
+      impact: "15% improvement in student grades"
+    },
+    {
+      title: "Resource Optimization",
+      value: "87%",
+      trend: "+12%",
+      icon: <TrendingUp size={24} />,
+      color: "#10b981",
+      detail: "Classroom and teaching resource utilization",
+      impact: "Cost reduction of 23%"
+    },
+    {
+      title: "Student Engagement",
+      value: "94%",
+      trend: "+8%",
+      icon: <Users size={24} />,
+      color: "#3b82f6",
+      detail: "Active participation and attendance",
+      impact: "Increased retention by 18%"
+    },
+    {
+      title: "Curriculum Effectiveness",
+      value: "90%",
+      trend: "+7%",
+      icon: <Target size={24} />,
+      color: "#f59e0b",
+      detail: "Learning objectives achievement rate",
+      impact: "Higher test scores across 85% of subjects"
+    }
+  ];
+
+  // Add predictive insights data
+  const predictiveInsights = [
+    {
+      category: "Academic Performance",
+      predictions: [
+        {
+          title: "Math Department Improvement",
+          prediction: "15% increase in test scores expected",
+          confidence: 89,
+          actionItems: ["Implement peer tutoring", "Add interactive tools"],
+          impact: "Affects 250 students"
+        },
+        {
+          title: "Science Lab Utilization",
+          prediction: "Current capacity underutilized by 35%",
+          confidence: 92,
+          actionItems: ["Schedule optimization", "Equipment sharing"],
+          impact: "Potential savings: $12,000/year"
+        }
+      ]
+    },
+    {
+      category: "Resource Management",
+      predictions: [
+        {
+          title: "Classroom Space Optimization",
+          prediction: "20% more efficient use of space",
+          confidence: 85,
+          actionItems: ["Redesign classroom layouts", "Implement flexible seating"],
+          impact: "Improves learning environment for 300 students"
+        },
+        {
+          title: "Teaching Material Costs",
+          prediction: "Reduce by 10% through bulk sourcing",
+          confidence: 90,
+          actionItems: ["Negotiate with suppliers", "Adopt open educational resources"],
+          impact: "Saves $5,000 annually"
+        }
+      ]
+    },
+    {
+      category: "Student Support",
+      predictions: [
+        {
+          title: "Counseling Services Demand",
+          prediction: "Increase by 25% in the next semester",
+          confidence: 88,
+          actionItems: ["Hire 2 more counselors", "Extend service hours"],
+          impact: "Better mental health support for students"
+        },
+        {
+          title: "Extracurricular Participation",
+          prediction: "Boost by 30% with new programs",
+          confidence: 91,
+          actionItems: ["Introduce coding club", "Start a debate team"],
+          impact: "Enhances student skills and engagement"
+        }
+      ]
     }
   ];
 
@@ -94,6 +167,99 @@ const AIInsightsDashboard = () => {
     { month: 'Apr', score: 86 },
     { month: 'May', score: 89 },
     { month: 'Jun', score: 85 }
+  ];
+
+  // Add quick actions data
+  const quickActionsData = {
+    atRisk: {
+      teachers: [
+        {
+          name: "Ms. Olivia Thompson",
+          risk: "High",
+          metrics: {
+            workload: "42 hours/week",
+            stressIndicators: "Above threshold",
+            lastAssessment: "2024-02-15"
+          },
+          recommendations: [
+            "Reduce administrative tasks",
+            "Schedule wellness check-in",
+            "Adjust class size"
+          ]
+        },
+        {
+          name: "Mr. James Carter",
+          risk: "Medium",
+          metrics: {
+            workload: "38 hours/week",
+            stressIndicators: "Moderate",
+            lastAssessment: "2024-02-10"
+          },
+          recommendations: [
+            "Review task distribution",
+            "Offer support resources",
+            "Monitor workload"
+          ]
+        }
+      ]
+    },
+    performanceMetrics: {
+      summary: {
+        overall: "85%",
+        improvement: "+5%",
+        areas: [
+          { name: "Teaching Quality", score: 92 },
+          { name: "Student Engagement", score: 88 },
+          { name: "Professional Development", score: 85 },
+          { name: "Administrative Tasks", score: 75 }
+        ]
+      }
+    },
+    aiRecommendations: [
+      {
+        category: "Workload Optimization",
+        suggestion: "Implement team teaching for Grade 8 Science",
+        impact: "Could reduce teacher stress by 25%",
+        priority: "High"
+      },
+      {
+        category: "Professional Development",
+        suggestion: "Schedule stress management workshop",
+        impact: "Potential 15% improvement in teacher wellbeing",
+        priority: "Medium"
+      },
+      {
+        category: "Resource Allocation",
+        suggestion: "Redistribute administrative tasks",
+        impact: "Could save 4 hours/week per teacher",
+        priority: "High"
+      }
+    ]
+  };
+
+  // Add quick actions array
+  const quickActions = [
+    { 
+      id: 'atRisk',
+      icon: <AlertTriangle size={20} />, 
+      label: "View At-Risk Teachers",
+      color: "#ef4444",
+      description: "Teachers requiring immediate attention"
+    },
+    { 
+      id: 'performanceMetrics',
+      icon: <Activity size={20} />, 
+      label: "Review Performance Metrics",
+      color: "#3b82f6",
+      description: "Detailed performance analysis"
+    },
+    { 
+      id: 'aiRecommendations',
+      icon: <Brain size={20} />, 
+      label: "Get AI Recommendations",
+      color: "#8b5cf6",
+      description: "AI-powered improvement suggestions"
+    }
   ];
 
   return (
@@ -134,15 +300,21 @@ const AIInsightsDashboard = () => {
         </button>
       </div>
 
-      {/* Insight Metrics */}
+      {/* Enhanced Insight Metrics */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
         gap: "24px",
         marginBottom: "32px"
       }}>
         {insightMetrics.map((metric, index) => (
-          <Card key={index}>
+          <Card key={index} style={{
+            cursor: "pointer",
+            transition: "transform 0.2s ease",
+            "&:hover": {
+              transform: "translateY(-4px)"
+            }
+          }}>
             <div style={{
               display: "flex",
               justifyContent: "space-between",
@@ -156,17 +328,15 @@ const AIInsightsDashboard = () => {
               }}>
                 {metric.icon}
               </div>
-              {metric.trend && (
-                <div style={{
-                  padding: "4px 12px",
-                  borderRadius: "999px",
-                  backgroundColor: "#f0fdf4",
-                  color: "#16a34a",
-                  fontSize: "14px"
-                }}>
-                  {metric.trend}
-                </div>
-              )}
+              <div style={{
+                padding: "4px 12px",
+                borderRadius: "999px",
+                backgroundColor: metric.trend.startsWith('+') ? "#f0fdf4" : "#fef2f2",
+                color: metric.trend.startsWith('+') ? "#16a34a" : "#dc2626",
+                fontSize: "14px"
+              }}>
+                {metric.trend}
+              </div>
             </div>
             <h3 style={{
               fontSize: "14px",
@@ -178,12 +348,123 @@ const AIInsightsDashboard = () => {
             <div style={{
               fontSize: "24px",
               fontWeight: "700",
-              color: "#1f2937"
+              color: "#1f2937",
+              marginBottom: "8px"
             }}>
               {metric.value}
             </div>
+            <div style={{
+              fontSize: "12px",
+              color: "#6b7280",
+              marginTop: "8px"
+            }}>
+              {metric.detail}
+            </div>
+            <div style={{
+              fontSize: "12px",
+              color: metric.color,
+              marginTop: "4px",
+              fontWeight: "500"
+            }}>
+              {metric.impact}
+            </div>
           </Card>
         ))}
+      </div>
+
+      {/* Add Predictive Analytics Section */}
+      <div style={{ marginBottom: "32px" }}>
+        <h2 style={{
+          fontSize: "24px",
+          fontWeight: "600",
+          color: "#1f2937",
+          marginBottom: "24px"
+        }}>
+          AI Predictions & Recommendations
+        </h2>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+          gap: "24px"
+        }}>
+          {predictiveInsights.map((category, index) => (
+            <Card key={index}>
+              <h3 style={{
+                fontSize: "16px",
+                fontWeight: "600",
+                color: "#1f2937",
+                marginBottom: "16px"
+              }}>
+                {category.category}
+              </h3>
+              {category.predictions.map((prediction, pIndex) => (
+                <div key={pIndex} style={{
+                  marginBottom: "16px",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  backgroundColor: "#f9fafb",
+                  borderLeft: `4px solid ${prediction.confidence > 85 ? '#10b981' : '#ef4444'}`
+                }}>
+                  <h4 style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#1f2937",
+                    margin: "0 0 8px 0"
+                  }}>
+                    {prediction.title}
+                  </h4>
+                  <p style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                    margin: "0 0 4px 0",
+                    lineHeight: "1.5"
+                  }}>
+                    {prediction.prediction}
+                  </p>
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px"
+                  }}>
+                    <span style={{
+                      fontSize: "12px",
+                      color: "#6b7280",
+                      fontStyle: "italic"
+                    }}>
+                      Confidence: {prediction.confidence}%
+                    </span>
+                    <span style={{
+                      fontSize: "12px",
+                      color: "#6b7280",
+                      fontStyle: "italic"
+                    }}>
+                      Impact: {prediction.impact}
+                    </span>
+                  </div>
+                  <div style={{
+                    marginTop: "8px",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px"
+                  }}>
+                    {prediction.actionItems.map((action, aIndex) => (
+                      <span key={aIndex} style={{
+                        padding: "4px 8px",
+                        borderRadius: "16px",
+                        backgroundColor: "#e0f2fe",
+                        color: "#0d9488",
+                        fontSize: "12px",
+                        fontWeight: "500"
+                      }}>
+                        {action}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Main Content Grid */}
@@ -237,29 +518,179 @@ const AIInsightsDashboard = () => {
             flexDirection: "column",
             gap: "16px"
           }}>
-            {[
-              { icon: <Target size={20} />, label: "View At-Risk Teachers" },
-              { icon: <ChartBar size={20} />, label: "Review Performance Metrics" },
-              { icon: <Lightbulb size={20} />, label: "Get AI Recommendations" }
-            ].map((action, index) => (
-              <button key={index} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px",
-                backgroundColor: "#f8fafc",
-                border: "none",
-                borderRadius: "8px",
-                color: "#1f2937",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                fontSize: "14px",
-                fontWeight: "500"
-              }}>
-                {action.icon}
-                {action.label}
-                <ArrowRight size={16} style={{ marginLeft: "auto" }} />
-              </button>
+            {quickActions.map((action) => (
+              <div key={action.id}>
+                <button
+                  onClick={() => setActiveQuickAction(activeQuickAction === action.id ? null : action.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "12px",
+                    backgroundColor: activeQuickAction === action.id ? `${action.color}15` : "#f8fafc",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#1f2937",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    width: "100%"
+                  }}
+                >
+                  <span style={{ color: action.color }}>{action.icon}</span>
+                  <div style={{ flex: 1, textAlign: "left" }}>
+                    <div>{action.label}</div>
+                    <div style={{ 
+                      fontSize: "12px", 
+                      color: "#6b7280",
+                      marginTop: "2px" 
+                    }}>
+                      {action.description}
+                    </div>
+                  </div>
+                  <ArrowRight 
+                    size={16} 
+                    style={{ 
+                      transform: activeQuickAction === action.id ? 'rotate(90deg)' : 'none',
+                      transition: 'transform 0.2s'
+                    }} 
+                  />
+                </button>
+
+                {activeQuickAction === action.id && (
+                  <div style={{
+                    marginTop: "12px",
+                    padding: "16px",
+                    backgroundColor: "#f8fafc",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    animation: "slideDown 0.2s ease-out"
+                  }}>
+                    {action.id === 'atRisk' && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {quickActionsData.atRisk.teachers.map((teacher, idx) => (
+                          <div key={idx} style={{
+                            padding: "12px",
+                            borderLeft: `3px solid ${
+                              teacher.risk === 'High' ? '#ef4444' : '#f59e0b'
+                            }`,
+                            backgroundColor: "white",
+                            marginBottom: "8px",
+                            borderRadius: "4px"
+                          }}>
+                            <div style={{ fontWeight: "500", marginBottom: "4px" }}>
+                              {teacher.name} - {teacher.risk} Risk
+                            </div>
+                            <div style={{ color: "#6b7280", fontSize: "12px" }}>
+                              Workload: {teacher.metrics.workload}
+                            </div>
+                            <div style={{ 
+                              marginTop: "8px",
+                              display: "flex",
+                              gap: "4px",
+                              flexWrap: "wrap"
+                            }}>
+                              {teacher.recommendations.map((rec, recIdx) => (
+                                <span key={recIdx} style={{
+                                  padding: "2px 8px",
+                                  backgroundColor: "#e5e7eb",
+                                  borderRadius: "12px",
+                                  fontSize: "12px"
+                                }}>
+                                  {rec}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {action.id === 'performanceMetrics' && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "16px"
+                        }}>
+                          <div style={{ fontSize: "24px", fontWeight: "600" }}>
+                            {quickActionsData.performanceMetrics.summary.overall}
+                          </div>
+                          <div style={{
+                            color: "#16a34a",
+                            backgroundColor: "#f0fdf4",
+                            padding: "4px 8px",
+                            borderRadius: "12px",
+                            fontSize: "12px"
+                          }}>
+                            {quickActionsData.performanceMetrics.summary.improvement}
+                          </div>
+                        </div>
+                        {quickActionsData.performanceMetrics.summary.areas.map((area, idx) => (
+                          <div key={idx} style={{ marginBottom: "12px" }}>
+                            <div style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginBottom: "4px"
+                            }}>
+                              <span>{area.name}</span>
+                              <span>{area.score}%</span>
+                            </div>
+                            <div style={{
+                              height: "4px",
+                              backgroundColor: "#e5e7eb",
+                              borderRadius: "2px"
+                            }}>
+                              <div style={{
+                                width: `${area.score}%`,
+                                height: "100%",
+                                backgroundColor: "#3b82f6",
+                                borderRadius: "2px",
+                                transition: "width 0.3s ease"
+                              }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {action.id === 'aiRecommendations' && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {quickActionsData.aiRecommendations.map((rec, idx) => (
+                          <div key={idx} style={{
+                            padding: "12px",
+                            backgroundColor: "white",
+                            marginBottom: "8px",
+                            borderRadius: "4px",
+                            borderLeft: `3px solid ${
+                              rec.priority === 'High' ? '#ef4444' : '#f59e0b'
+                            }`
+                          }}>
+                            <div style={{
+                              color: "#6b7280",
+                              fontSize: "12px",
+                              marginBottom: "4px"
+                            }}>
+                              {rec.category}
+                            </div>
+                            <div style={{ fontWeight: "500", marginBottom: "4px" }}>
+                              {rec.suggestion}
+                            </div>
+                            <div style={{
+                              color: "#16a34a",
+                              fontSize: "12px"
+                            }}>
+                              {rec.impact}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </Card>
@@ -326,104 +757,7 @@ const AIInsightsDashboard = () => {
           ></div>
         </div>
       </div>
-
-      {/* Career Path Suggestions */}
-      <div style={{ marginBottom: "48px" }}>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "600",
-            color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Career Path Suggestions
-        </h2>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-            marginBottom: "24px",
-          }}
-        >
-          {/* Current Role Dropdown */}
-          <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#4b5563",
-              }}
-            >
-              Current Role
-            </label>
-            <select
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-                fontSize: "14px",
-                color: "#1f2937",
-              }}
-            >
-              <option value="">Select current role</option>
-              <option value="teacher">Teacher</option>
-              <option value="seniorTeacher">Senior Teacher</option>
-              <option value="departmentHead">Department Head</option>
-            </select>
-          </div>
-
-          {/* Career Interest Dropdown */}
-          <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#4b5563",
-              }}
-            >
-              Career Interest
-            </label>
-            <select
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-                fontSize: "14px",
-                color: "#1f2937",
-              }}
-            >
-              <option value="">Select area of interest</option>
-              <option value="curriculum">Curriculum Development</option>
-              <option value="administration">Administration</option>
-              <option value="coaching">Teacher Coaching</option>
-              <option value="technology">Educational Technology</option>
-            </select>
-          </div>
-        </div>
-
+        
         {/* Detailed Career Suggestion - Made Clickable */}
         <div
           onClick={() => alert("Opening detailed career path information")}
@@ -479,7 +813,6 @@ const AIInsightsDashboard = () => {
             }}
           ></div>
         </div>
-      </div>
 
       {/* Staffing Optimization */}
       <div>
@@ -543,6 +876,21 @@ const AIInsightsDashboard = () => {
           ></div>
         </div>
       </div>
+
+      <style>
+        {`
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
     </main>
   );
 };

@@ -33,9 +33,9 @@ const TeacherProfile = () => {
 
   const sidebarItems = [
     { icon: <RiDashboardLine size={20} color="#000" />, label: "Overview", active: true },
-    // { icon: <RiTimeLine size={20} color="#000" />, label: "Workload", active: true },
-    // { icon: <RiBarChartBoxLine size={20} color="#000" />, label: "Performance", active: true },
-    // { icon: <RiMessage2Line size={20} color="#000" />, label: "Feedback", active: true },
+    { icon: <RiTimeLine size={20} color="#000" />, label: "Workload", active: true },
+    { icon: <RiBarChartBoxLine size={20} color="#000" />, label: "Performance", active: true },
+    { icon: <RiMessage2Line size={20} color="#000" />, label: "Feedback", active: true },
   ]
   // Update course data with more details
   const courseData = [

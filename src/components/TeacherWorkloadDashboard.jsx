@@ -1,6 +1,16 @@
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { 
+  LogOut, 
+  Clock, 
+  BookOpen, 
+  Users, 
+  ClipboardList,
+  BarChart2,
+  Calendar,
+  AlertTriangle,
+  CheckCircle 
+} from 'lucide-react';
 
 const TeacherWorkloadDashboard = () => {
     const navigate = useNavigate();
@@ -34,15 +44,76 @@ const TeacherWorkloadDashboard = () => {
         }
     ];
 
+    // Add detailed workload analytics
+    const workloadAnalytics = {
+        currentWeek: {
+            teachingHours: 25,
+            planningHours: 10,
+            adminHours: 8,
+            totalHours: 43,
+            target: 40,
+            trend: "+5%"
+        },
+        deadlines: [
+            {
+                task: "Grade Submissions",
+                due: "2024-02-20",
+                priority: "High",
+                status: "Pending"
+            },
+            {
+                task: "Lesson Plans",
+                due: "2024-02-18",
+                priority: "Medium",
+                status: "In Progress"
+            }
+        ],
+        weeklySchedule: [
+            {
+                day: "Monday",
+                classes: [
+                    { time: "08:00-09:30", subject: "Advanced Biology", students: 28 },
+                    { time: "10:00-11:30", subject: "Chemistry Lab", students: 24 }
+                ],
+                totalHours: 6
+            },
+            // Add more days...
+        ]
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("teacherAuthenticated");
         navigate('/login');
     };
 
     return (
-        <div style={{ padding: "32px" }}>
-            <h1>Teacher Workload Dashboard</h1>
-            {/* Add workload visualization and management components */}
+        <div style={{ padding: "32px", backgroundColor: "#f8fafc" }}>
+            {/* Header Section */}
+            <div style={{ marginBottom: "32px", display: "flex", justifyContent: "space-between" }}>
+                <div>
+                    <h1 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "8px" }}>
+                        Workload Management Dashboard
+                    </h1>
+                    <p style={{ color: "#6b7280" }}>Monitor and manage teaching workload efficiently</p>
+                </div>
+                {/* Add export/print buttons */}
+            </div>
+
+            {/* Add Workload Overview Cards */}
+            <div style={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", 
+                gap: "24px",
+                marginBottom: "32px" 
+            }}>
+                {/* Add cards here */}
+            </div>
+
+            {/* Add Weekly Schedule Calendar */}
+            {/* Add Task Management Section */}
+            {/* Add Workload Distribution Chart */}
+            
+            {/* Add responsive styles */}
 
             {/* Related Content Section */}
             <div style={{

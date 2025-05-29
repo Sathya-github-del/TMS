@@ -17,6 +17,12 @@ import {
 const RecognitionDashboard = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("Recognition & Rewards System")
+  const [activeTab, setActiveTab] = useState('all');
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [showKudosForm, setShowKudosForm] = useState(false);
+  const [sortLeaderboard, setSortLeaderboard] = useState('rank'); // 'rank', 'badges', 'name'
+  const [expandedTimeline, setExpandedTimeline] = useState(null);
+  const [teacherRating, setTeacherRating] = useState(5);
 
   const leaderboardData = [
     {
@@ -90,50 +96,190 @@ const RecognitionDashboard = () => {
     },
   ]
 
-  // Add reward statistics
+  // Update reward statistics with more business-focused metrics
   const rewardStats = [
     {
-      title: "Total Kudos",
-      value: "1,234",
+      title: "Student Success Rate",
+      value: "92%",
+      icon: <Trophy size={24} />,
+      color: "#10b981",
+      change: "+15%",
+      detail: "Based on student performance improvement"
+    },
+    {
+      title: "Parent Satisfaction",
+      value: "4.8/5",
       icon: <Heart size={24} />,
       color: "#ef4444",
-      change: "+12%"
+      change: "+12%",
+      detail: "From parent feedback surveys"
     },
     {
-      title: "Active Awards",
+      title: "Teaching Excellence",
       value: "156",
-      icon: <Trophy size={24} />,
-      color: "#f59e0b",
-      change: "+5%"
-    },
-    {
-      title: "Teacher Recognition",
-      value: "89",
       icon: <Medal size={24} />,
       color: "#3b82f6",
-      change: "+8%"
+      change: "+8%",
+      detail: "Excellence awards this semester"
     },
     {
-      title: "Rewards Distributed",
-      value: "450",
+      title: "Innovation Score",
+      value: "89%",
       icon: <Gift size={24} />,
-      color: "#10b981",
-      change: "+15%"
+      color: "#f59e0b",
+      change: "+10%",
+      detail: "Based on teaching methodology adoption"
     }
   ];
 
-  // Add achievement categories
-  const achievementCategories = [
-    { id: 'all', label: 'All Achievements' },
-    { id: 'kudos', label: 'Kudos' },
-    { id: 'awards', label: 'Awards' },
-    { id: 'badges', label: 'Badges' }
-  ];
+  // Add business-oriented achievements
+  const achievements = {
+    kudos: [
+      {
+        id: 1,
+        title: "Outstanding Teaching Innovation",
+        description: "Successfully implemented blended learning approach, increasing student engagement by 45%",
+        icon: "🌟",
+        date: "2024-01-15",
+        teacher: "Ms. Harper",
+        impact: "Improved student test scores by 32%"
+      },
+      {
+        id: 2,
+        title: "Team Player",
+        description: "Organized department collaboration sessions",
+        icon: "🤝",
+        date: "2024-01-20",
+        teacher: "Mr. Bennett"
+      }
+    ],
+    awards: [
+      {
+        id: 1,
+        title: "Excellence in STEM Education",
+        description: "Led robotics program resulting in state championship",
+        icon: "🏆",
+        date: "2024-01-01",
+        teacher: "Ms. Carter",
+        impact: "15 students received tech scholarships"
+      },
+      {
+        id: 2,
+        title: "Innovation Award",
+        description: "Implemented creative teaching methods",
+        icon: "💡",
+        date: "2024-01-10",
+        teacher: "Mr. Davis"
+      }
+    ],
+    badges: [
+      {
+        id: 1,
+        title: "Technology Master",
+        description: "Excellence in digital learning implementation",
+        icon: "💻",
+        date: "2024-01-05",
+        teacher: "Ms. Evans"
+      },
+      {
+        id: 2,
+        title: "Mentor Excellence",
+        description: "Exceptional mentoring of new teachers",
+        icon: "🌟",
+        date: "2024-01-12",
+        teacher: "Ms. Harper"
+      }
+    ]
+  };
+
+  const getFilteredAchievements = () => {
+    if (activeTab === 'all') {
+      return [
+        ...achievements.kudos,
+        ...achievements.awards,
+        ...achievements.badges
+      ];
+    }
+    return achievements[activeTab] || [];
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     navigate('/');
   };
+
+  const handleKudosSubmit = (kudos) => {
+    // Add new kudos to kudosWall
+    const newKudos = {
+      title: kudos.title,
+      giver: "Current User",
+      receiver: kudos.receiver,
+    };
+    setKudosWall([newKudos, ...kudosWall]);
+    setShowKudosForm(false);
+  };
+
+  const getSortedLeaderboard = () => {
+    return [...leaderboardData].sort((a, b) => {
+      switch (sortLeaderboard) {
+        case 'rank': return a.rank - b.rank;
+        case 'badges': return b.badge.localeCompare(a.badge);
+        case 'name': return a.teacher.localeCompare(b.teacher);
+        default: return 0;
+      }
+    });
+  };
+
+  // Add demo-ready teacher statistics
+  const teacherMetrics = {
+    averageStudentGrowth: "28%",
+    parentEngagementRate: "95%",
+    professionalDevelopment: "25 hours/month",
+    collaborationScore: "92%"
+  };
+
+  // Update achievement categories with detailed metrics
+  const achievementCategories = [
+    { 
+      id: 'all', 
+      label: 'All Achievements',
+      icon: <Trophy size={20} />,
+      description: 'Complete record of professional accomplishments'
+    },
+    { 
+      id: 'kudos', 
+      label: 'Professional Excellence',
+      icon: <Award size={20} />,
+      description: 'Recognition from peers and administration',
+      metrics: {
+        total: 156,
+        thisMonth: 23,
+        growth: '+15%'
+      }
+    },
+    { 
+      id: 'awards', 
+      label: 'Academic Impact',
+      icon: <Star size={20} />,
+      description: 'Measurable student success outcomes',
+      metrics: {
+        total: 42,
+        thisMonth: 8,
+        growth: '+12%'
+      }
+    },
+    { 
+      id: 'badges', 
+      label: 'Professional Development',
+      icon: <Medal size={20} />,
+      description: 'Certifications and skill advancement',
+      metrics: {
+        total: 89,
+        thisMonth: 12,
+        growth: '+18%'
+      }
+    }
+  ];
 
   return (
     <main style={{ padding: "32px" }}>
@@ -231,52 +377,197 @@ const RecognitionDashboard = () => {
         ))}
       </div>
 
+      {/* Key Performance Indicators - New Section */}
+      <div style={{
+        marginBottom: "24px",
+        padding: "20px",
+        backgroundColor: "#f8fafc",
+        borderRadius: "12px",
+        border: "1px solid #e5e7eb"
+      }}>
+        <h3 style={{ color: "#1f2937", marginBottom: "16px" }}>Key Performance Indicators</h3>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "16px"
+        }}>
+          {Object.entries(teacherMetrics).map(([key, value]) => (
+            <div key={key} style={{
+              padding: "16px",
+              backgroundColor: "white",
+              borderRadius: "8px",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
+            }}>
+              <div style={{ color: "#6b7280", fontSize: "14px" }}>
+                {key.replace(/([A-Z])/g, ' $1').trim()}
+              </div>
+              <div style={{ color: "#1f2937", fontSize: "24px", fontWeight: "600" }}>
+                {value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Achievement Categories */}
       <div style={{
         backgroundColor: "white",
-        padding: "16px",
+        padding: "24px",
         borderRadius: "12px",
         marginBottom: "24px",
         boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
       }}>
         <div style={{
           display: "flex",
-          gap: "12px",
+          gap: "16px",
           overflowX: "auto",
-          padding: "4px"
+          padding: "8px",
+          marginBottom: "24px"
         }}>
           {achievementCategories.map(category => (
             <button
               key={category.id}
+              onClick={() => setActiveTab(category.id)}
               style={{
-                padding: "8px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "12px 20px",
                 borderRadius: "8px",
                 border: "none",
-                backgroundColor: category.id === 'all' ? "#3b82f6" : "#f3f4f6",
-                color: category.id === 'all' ? "white" : "#6b7280",
+                backgroundColor: category.id === activeTab ? "#3b82f6" : "#f3f4f6",
+                color: category.id === activeTab ? "white" : "#6b7280",
                 fontSize: "14px",
                 cursor: "pointer",
-                whiteSpace: "nowrap"
+                transition: "all 0.2s ease",
+                minWidth: "200px"
               }}
             >
-              {category.label}
+              <span style={{
+                display: "flex",
+                alignItems: "center"
+              }}>
+                {category.icon}
+              </span>
+              <div style={{
+                textAlign: "left",
+                flex: 1
+              }}>
+                <div style={{ fontWeight: "500" }}>{category.label}</div>
+                {category.metrics && category.id === activeTab && (
+                  <div style={{
+                    fontSize: "12px",
+                    opacity: 0.9,
+                    marginTop: "4px"
+                  }}>
+                    {category.metrics.total} total · {category.metrics.growth} this month
+                  </div>
+                )}
+              </div>
             </button>
+          ))}
+        </div>
+
+        <div style={{
+          fontSize: "14px",
+          color: "#6b7280",
+          marginBottom: "16px",
+          padding: "0 8px"
+        }}>
+          {achievementCategories.find(c => c.id === activeTab)?.description}
+        </div>
+
+        {/* Achievement Content - Keep existing grid layout */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: "16px",
+          padding: "16px"
+        }}>
+          {getFilteredAchievements().map((achievement) => (
+            <div
+              key={achievement.id}
+              style={{
+                backgroundColor: "#f8fafc",
+                borderRadius: "8px",
+                padding: "16px",
+                border: "1px solid #e5e7eb"
+              }}
+            >
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "12px"
+              }}>
+                <span style={{ fontSize: "24px" }}>{achievement.icon}</span>
+                <div>
+                  <h3 style={{
+                    margin: "0",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#1f2937"
+                  }}>
+                    {achievement.title}
+                  </h3>
+                  <p style={{
+                    margin: "4px 0 0 0",
+                    fontSize: "14px",
+                    color: "#6b7280"
+                  }}>
+                    {achievement.teacher}
+                  </p>
+                </div>
+              </div>
+              <p style={{
+                margin: "0 0 8px 0",
+                fontSize: "14px",
+                color: "#374151"
+              }}>
+                {achievement.description}
+              </p>
+              <div style={{
+                fontSize: "12px",
+                color: "#6b7280"
+              }}>
+                {new Date(achievement.date).toLocaleDateString()}
+              </div>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Leaderboard */}
       <div style={{ marginBottom: "48px" }}>
-        <h2
-          style={{
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px"
+        }}>
+          <h2 style={{
             fontSize: "24px",
             fontWeight: "600",
             color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Leaderboard
-        </h2>
+            margin: 0
+          }}>
+            Leaderboard
+          </h2>
+          <select
+            value={sortLeaderboard}
+            onChange={(e) => setSortLeaderboard(e.target.value)}
+            style={{
+              padding: "8px 12px",
+              borderRadius: "6px",
+              border: "1px solid #e5e7eb",
+              fontSize: "14px"
+            }}
+          >
+            <option value="rank">Sort by Rank</option>
+            <option value="badges">Sort by Badges</option>
+            <option value="name">Sort by Name</option>
+          </select>
+        </div>
 
         <div
           style={{
@@ -335,7 +626,7 @@ const RecognitionDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {leaderboardData.map((item, index) => (
+                {getSortedLeaderboard().map((item, index) => (
                   <tr
                     key={index}
                     style={{
@@ -374,17 +665,101 @@ const RecognitionDashboard = () => {
 
       {/* Kudos Wall */}
       <div style={{ marginBottom: "48px" }}>
-        <h2
-          style={{
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px"
+        }}>
+          <h2 style={{
             fontSize: "24px",
             fontWeight: "600",
             color: "#1f2937",
-            margin: "0 0 24px 0",
-          }}
-        >
-          Kudos Wall
-        </h2>
+            margin: 0
+          }}>
+            Kudos Wall
+          </h2>
+          <button
+            onClick={() => setShowKudosForm(true)}
+            style={{
+              backgroundColor: "#3b82f6",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
+            Give Kudos
+          </button>
+        </div>
 
+        {showKudosForm && (
+          <div style={{
+            backgroundColor: "white",
+            padding: "24px",
+            borderRadius: "12px",
+            marginBottom: "16px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+          }}>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handleKudosSubmit({
+                title: e.target.title.value,
+                receiver: e.target.receiver.value
+              });
+            }}>
+              <input
+                name="title"
+                placeholder="Write your kudos..."
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  marginBottom: "12px",
+                  borderRadius: "6px",
+                  border: "1px solid #e5e7eb"
+                }}
+              />
+              <select
+                name="receiver"
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  marginBottom: "12px",
+                  borderRadius: "6px",
+                  border: "1px solid #e5e7eb"
+                }}
+              >
+                {leaderboardData.map(teacher => (
+                  <option key={teacher.teacher} value={teacher.teacher}>
+                    {teacher.teacher}
+                  </option>
+                ))}
+              </select>
+              <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowKudosForm(false)}
+                  style={{ padding: "8px 16px" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    border: "none"
+                  }}
+                >
+                  Send
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
         <div
           style={{
             display: "flex",
@@ -548,6 +923,31 @@ const RecognitionDashboard = () => {
               flexShrink: 0,
             }}
           ></div>
+        </div>
+        <div style={{
+          marginTop: "16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px"
+        }}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              onClick={() => setTeacherRating(star)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "24px",
+                color: star <= teacherRating ? "#fbbf24" : "#e5e7eb"
+              }}
+            >
+              ★
+            </button>
+          ))}
+          <span style={{ fontSize: "14px", color: "#6b7280", marginLeft: "8px" }}>
+            ({teacherRating}/5)
+          </span>
         </div>
       </div>
 

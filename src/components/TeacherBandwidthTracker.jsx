@@ -115,8 +115,8 @@ const TeacherBandwidthTracker = () => {
     return (
       teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedSubject === "" || teacher.subject === selectedSubject) &&
-      (selectedGrade === "" || true) &&
-      (selectedStatus === "" || true)
+      (selectedGrade === "" || teacher.grade === selectedGrade) &&
+      (selectedStatus === "" || teacher.status === selectedStatus)
     )
   })
 
@@ -221,73 +221,8 @@ const TeacherBandwidthTracker = () => {
         ))}
       </div>
 
-      {/* Enhanced Search and Filters */}
-      <div style={{
-        backgroundColor: "white",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        marginBottom: "24px"
-      }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto auto auto",
-          gap: "16px",
-          alignItems: "center"
-        }}>
-          {/* Search Input */}
-          <div style={{
-            position: "relative"
-          }}>
-            <input
-              type="text"
-              placeholder="Search teachers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 16px",
-                paddingLeft: "40px",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px"
-              }}
-            />
-            <span style={{
-              position: "absolute",
-              left: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#9ca3af"
-            }}>
-              🔍
-            </span>
-          </div>
-
-          {/* Filter Dropdowns */}
-          {filterOptions.map((filter, index) => (
-            <select
-              key={index}
-              value={filter.value}
-              onChange={(e) => filter.setter(e.target.value)}
-              style={{
-                padding: "10px 16px",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px",
-                minWidth: "150px",
-                color: "#1f2937",
-                backgroundColor: "white"
-              }}
-            >
-              <option value="">{filter.label}</option>
-              {filter.options.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          ))}
-        </div>
-      </div>
+     
+       
 
       {/* Workload Distribution Chart */}
       <div style={{
@@ -327,6 +262,65 @@ const TeacherBandwidthTracker = () => {
           marginBottom: "32px",
         }}
       >
+          <hr style={{height:'10px', backgroundColor:'transparent'}}/>
+         <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto auto auto",
+          gap: "16px",
+          alignItems: "center"
+        }}>
+          {/* Search Input */}
+          <div style={{
+            position: "relative"
+          }}>
+            <input
+              type="text"
+              placeholder="Search teachers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 16px",
+                paddingLeft: "40px",
+                borderRadius: "8px",
+                border: "1px solid #000",
+                fontSize: "14px",
+              }}
+            />
+            <span style={{
+              position: "absolute",
+              left: "12px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#9ca3af"
+            }}>
+              🔍
+            </span>
+          </div>
+
+          {/* Filter Dropdowns */}
+          {filterOptions.map((filter, index) => (
+            <select
+              key={index}
+              value={filter.value}
+              onChange={(e) => filter.setter(e.target.value)}
+              style={{
+                padding: "10px 16px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                fontSize: "14px",
+                minWidth: "150px",
+                color: "#1f2937",
+                backgroundColor: "white"
+              }}
+            >
+              <option value="">{filter.label}</option>
+              {filter.options.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          ))}
+        </div>
         <div style={{ overflowX: "auto" }}>
           <table
             style={{

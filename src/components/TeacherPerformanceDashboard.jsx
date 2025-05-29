@@ -1,7 +1,14 @@
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { 
+  LogOut, 
+  TrendingUp, 
+  Target, 
+  Award,
+  BarChart2,
+  Star 
+} from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const TeacherPerformanceDashboard = () => {
     const navigate = useNavigate();
@@ -37,15 +44,82 @@ const TeacherPerformanceDashboard = () => {
         }
     ];
 
+    // Add performance KPIs
+    const performanceKPIs = [
+        {
+            title: "Student Success Rate",
+            value: "92%",
+            trend: "+5%",
+            icon: <TrendingUp size={24} />,
+            color: "#10b981"
+        },
+        {
+            title: "Lesson Effectiveness",
+            value: "88%",
+            trend: "+3%",
+            icon: <Target size={24} />,
+            color: "#3b82f6"
+        }
+    ];
+
+    // Add competency metrics
+    const competencyMetrics = [
+        {
+            area: "Teaching Methods",
+            score: 85,
+            benchmark: 80,
+            improvement: [
+                "Interactive learning techniques",
+                "Technology integration"
+            ]
+        }
+        // ...add more metrics
+    ];
+
+    // Add performance metrics
+    const performanceMetrics = {
+        overall: {
+            score: 92,
+            trend: "+5%",
+            previousScore: 87
+        },
+        categories: [
+            {
+                name: "Teaching Quality",
+                score: 95,
+                trend: "+3%",
+                insights: "Excellent student engagement"
+            },
+            {
+                name: "Student Progress",
+                score: 88,
+                trend: "+6%",
+                insights: "Steady improvement in test scores"
+            }
+        ],
+        recentFeedback: [
+            {
+                from: "Department Head",
+                rating: 4.8,
+                comment: "Excellent classroom management",
+                date: "2024-02-15"
+            }
+        ]
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("teacherAuthenticated");
         navigate('/login');
     };
 
     return (
-        <div style={{ padding: "32px" }}>
+        <div style={{ padding: "32px", backgroundColor: "#f8fafc" }}>
             <h1>Teacher Performance Dashboard</h1>
-            {/* Add performance metrics and charts */}
+            {/* Add Overview Section */}
+            {/* Add Performance Trends */}
+            {/* Add Feedback Section */}
+            {/* Add Goals & Objectives */}
+            {/* Add Professional Development Tracking */}
 
             {/* Related Content Section */}
             <div style={{

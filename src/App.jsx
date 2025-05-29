@@ -75,9 +75,9 @@ export default function App() {
             <ProtectedRoute allowedRole="teacher">
               <Routes>
                 <Route path="dashboard" element={<TeacherProfile />} />
-                {/* <Route path="workload" element={<TeacherWorkloadDashboard />} />
+                <Route path="workload" element={<TeacherWorkloadDashboard />} />
                 <Route path="performance" element={<TeacherPerformanceDashboard />} />
-                <Route path="feedback" element={<TeacherFeedbackDashboard />} /> */}
+                <Route path="feedback" element={<TeacherFeedbackDashboard />} />
               </Routes>
             </ProtectedRoute>
           }
