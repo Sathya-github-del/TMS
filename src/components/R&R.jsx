@@ -240,14 +240,14 @@ const RecognitionDashboard = () => {
 
   // Update achievement categories with detailed metrics
   const achievementCategories = [
-    { 
-      id: 'all', 
+    {
+      id: 'all',
       label: 'All Achievements',
       icon: <Trophy size={20} />,
       description: 'Complete record of professional accomplishments'
     },
-    { 
-      id: 'kudos', 
+    {
+      id: 'kudos',
       label: 'Professional Excellence',
       icon: <Award size={20} />,
       description: 'Recognition from peers and administration',
@@ -257,8 +257,8 @@ const RecognitionDashboard = () => {
         growth: '+15%'
       }
     },
-    { 
-      id: 'awards', 
+    {
+      id: 'awards',
       label: 'Academic Impact',
       icon: <Star size={20} />,
       description: 'Measurable student success outcomes',
@@ -268,8 +268,8 @@ const RecognitionDashboard = () => {
         growth: '+12%'
       }
     },
-    { 
-      id: 'badges', 
+    {
+      id: 'badges',
       label: 'Professional Development',
       icon: <Medal size={20} />,
       description: 'Certifications and skill advancement',

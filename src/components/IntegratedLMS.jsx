@@ -13,7 +13,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Briefcase
+  Briefcase,
+  X // Add X icon for close button
 } from 'lucide-react';
 
 // Card Component
@@ -37,12 +38,24 @@ const IntegratedLMS = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [showAddCourseModal, setShowAddCourseModal] = useState(false);
+  const [newCourse, setNewCourse] = useState({
+    title: '',
+    description: '',
+    duration: '',
+    status: 'upcoming',
+    color: '#3b82f6',
+    startDate: '',
+    endDate: ''
+  });
   const [workloadStats] = useState({
     overworked: 3,
     optimal: 12,
     available: 5
   });
   const [activeTab, setActiveTab] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 8; // Changed from 6 to 8
 
   // Add course analytics data
   const courseAnalytics = {
@@ -107,8 +120,8 @@ const IntegratedLMS = () => {
     }
   ];
 
-  // Update courseData to include status
-  const courseData = [
+  // Convert courseData to state
+  const [courses, setCourses] = useState([
     {
       id: 1,
       title: "Introduction to Classroom Management",
@@ -176,22 +189,53 @@ const IntegratedLMS = () => {
       status: "completed",
       progress: 100,
       completionDate: "2024-01-10"
-    }
-  ];
-
-  // Filter courses based on active tab
-  const getFilteredCourses = () => {
-    switch (activeTab) {
-      case 'inProgress':
-        return courseData.filter(course => course.status === 'in_progress');
-      case 'completed':
-        return courseData.filter(course => course.status === 'completed');
-      case 'upcoming':
-        return courseData.filter(course => course.status === 'upcoming');
-      default:
-        return courseData;
-    }
-  };
+    },
+    {
+      id: 7,
+      title: "Educational Leadership",
+      duration: "6 weeks",
+      color: "#818cf8",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Develop leadership skills in education",
+      status: "upcoming",
+      startDate: "2024-04-01",
+      endDate: "2024-05-15"
+    },
+    {
+      id: 8,
+      title: "Special Education Fundamentals",
+      duration: "4 weeks",
+      color: "#14b8a6",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Learn special education teaching methods",
+      status: "in_progress",
+      progress: 30,
+      startDate: "2024-02-15",
+      endDate: "2024-03-15"
+    },
+    {
+      id: 9,
+      title: "STEM Teaching Methods",
+      duration: "5 weeks",
+      color: "#f472b6",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Advanced STEM teaching strategies",
+      status: "upcoming",
+      startDate: "2024-04-15",
+      endDate: "2024-05-20"
+    },
+    {
+      id: 10,
+      title: "Student Assessment Strategies",
+      duration: "4 weeks",
+      color: "#0891b2",
+      image: "/placeholder.svg?height=200&width=300",
+      description: "Learn effective assessment methods",
+      status: "completed",
+      progress: 100,
+      completionDate: "2024-01-10"
+    },
+  ]);
 
   // Update teacherProgress data to include recommended courses
   const teacherProgress = [
@@ -292,6 +336,287 @@ const IntegratedLMS = () => {
     navigate('/');
   };
 
+  // Add pagination component
+  const Pagination = ({ totalCourses }) => {
+    const totalPages = Math.ceil(totalCourses / coursesPerPage);
+
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '8px',
+        padding: '24px'
+      }}>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+          <button
+            key={number}
+            onClick={() => setCurrentPage(number)}
+            style={{
+              padding: '8px 12px',
+              border: 'none',
+              borderRadius: '6px',
+              backgroundColor: currentPage === number ? '#3b82f6' : '#f3f4f6',
+              color: currentPage === number ? 'white' : '#6b7280',
+              cursor: 'pointer',
+              fontWeight: currentPage === number ? '600' : '400'
+            }}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  // Update getFilteredCourses to use courses state instead of courseData
+  const getFilteredCourses = () => {
+    let filtered;
+    switch (activeTab) {
+      case 'inProgress':
+        filtered = courses.filter(course => course.status === 'in_progress');
+        break;
+      case 'completed':
+        filtered = courses.filter(course => course.status === 'completed');
+        break;
+      case 'upcoming':
+        filtered = courses.filter(course => course.status === 'upcoming');
+        break;
+      default:
+        filtered = courses;
+    }
+
+    // Calculate pagination
+    const indexOfLastCourse = currentPage * coursesPerPage;
+    const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+    return {
+      courses: filtered.slice(indexOfFirstCourse, indexOfLastCourse),
+      totalCourses: filtered.length
+    };
+  };
+
+  // Add new course handler
+  const handleAddCourse = (e) => {
+    e.preventDefault();
+    const course = {
+      id: courses.length + 1,
+      ...newCourse,
+      image: "/placeholder.svg?height=200&width=300",
+    };
+
+    // Add progress if status is in_progress
+    if (course.status === 'in_progress') {
+      course.progress = 0;
+    }
+    // Add completion date if status is completed
+    if (course.status === 'completed') {
+      course.completionDate = new Date().toISOString().split('T')[0];
+      course.progress = 100;
+    }
+
+    setCourses(prevCourses => [...prevCourses, course]);
+    setShowAddCourseModal(false);
+    setNewCourse({
+      title: '',
+      description: '',
+      duration: '',
+      status: 'upcoming',
+      color: '#3b82f6',
+      startDate: '',
+      endDate: ''
+    });
+    setCurrentPage(1);
+  };
+
+  // Add Course Modal Component
+  const AddCourseModal = () => (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        width: '500px',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        height: 'auto',
+        maxHeight: '90vh'
+      }}>
+        {/* Modal Header */}
+        <div style={{
+          padding: '20px 24px',
+          borderBottom: '1px solid #e5e7eb',
+          position: 'relative'
+        }}>
+          <h2 style={{
+            margin: 0,
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#111827'
+          }}>
+            Add New Course
+          </h2>
+          <button
+            onClick={() => setShowAddCourseModal(false)}
+            style={{
+              position: 'absolute',
+              right: '20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              color: '#6b7280'
+            }}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Form Container */}
+        <div style={{
+          padding: '24px',
+          overflowY: 'auto'
+        }}>
+          <form onSubmit={handleAddCourse}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '24px'
+            }}>
+              {/* Form Fields Container */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px'
+              }}>
+                {/* Title Field */}
+                <FormField>
+                  <FormLabel>Course Title</FormLabel>
+                  <input
+                    type="text"
+                    required
+                    value={newCourse.title}
+                    onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
+                    className="form-input"
+                    style={formInputStyle}
+                    placeholder="Enter course title"
+                  />
+                </FormField>
+
+                {/* Description Field */}
+                <FormField>
+                  <FormLabel>Description</FormLabel>
+                  <textarea
+                    required
+                    value={newCourse.description}
+                    onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
+                    style={{
+                      ...formInputStyle,
+                      height: '100px',
+                      resize: 'none'
+                    }}
+                    placeholder="Enter course description"
+                  />
+                </FormField>
+
+                {/* Duration Field */}
+                <FormField>
+                  <FormLabel>Duration</FormLabel>
+                  <input
+                    type="text"
+                    required
+                    value={newCourse.duration}
+                    onChange={(e) => setNewCourse({ ...newCourse, duration: e.target.value })}
+                    style={formInputStyle}
+                    placeholder="e.g., 4 weeks"
+                  />
+                </FormField>
+
+                {/* Status Field */}
+                <FormField>
+                  <FormLabel>Status</FormLabel>
+                  <select
+                    value={newCourse.status}
+                    onChange={(e) => setNewCourse({ ...newCourse, status: e.target.value })}
+                    style={formInputStyle}
+                  >
+                    <option value="upcoming">Upcoming</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </FormField>
+
+                {/* Color Field */}
+                <FormField>
+                  <FormLabel>Color Theme</FormLabel>
+                  <input
+                    type="color"
+                    value={newCourse.color}
+                    onChange={(e) => setNewCourse({ ...newCourse, color: e.target.value })}
+                    style={{
+                      ...formInputStyle,
+                      padding: '6px'
+                    }}
+                  />
+                </FormField>
+              </div>
+
+              {/* Form Actions */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginTop: '12px',
+                borderTop: '1px solid #e5e7eb',
+                paddingTop: '20px'
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddCourseModal(false)}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '6px',
+                    backgroundColor: 'white',
+                    color: '#374151',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    border: 'none',
+                    borderRadius: '6px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Add Course
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <main style={{ padding: "32px", backgroundColor: "#f8fafc" }}>
       {/* Header Section */}
@@ -379,17 +704,20 @@ const IntegratedLMS = () => {
             alignItems: "center"
           }}>
             <h2 style={{ fontSize: "20px", fontWeight: "600", margin: 0 }}>Course Management</h2>
-            <button style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "8px 16px",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}>
+            <button
+              onClick={() => setShowAddCourseModal(true)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                backgroundColor: "#3b82f6",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer"
+              }}
+            >
               <Plus size={16} />
               Add Course
             </button>
@@ -424,16 +752,18 @@ const IntegratedLMS = () => {
           </div>
         </div>
 
-        {/* Course Grid - Update to use filtered courses */}
+        {/* Course Grid - Update to use filtered courses with pagination */}
         <div style={{
           padding: "24px",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "24px"
+          gridTemplateColumns: "repeat(4, 1fr)", // Changed to show exactly 4 columns
+          gap: "24px",
+          maxWidth: "100%",
+          overflow: "hidden"
         }}>
-          {getFilteredCourses().map(course => (
-            <CourseCard 
-              key={course.id} 
+          {getFilteredCourses().courses.map(course => (
+            <CourseCard
+              key={course.id}
               course={course}
               showProgress={course.status === 'in_progress'}
               showStartDate={course.status === 'upcoming'}
@@ -441,6 +771,9 @@ const IntegratedLMS = () => {
             />
           ))}
         </div>
+
+        {/* Add Pagination */}
+        <Pagination totalCourses={getFilteredCourses().totalCourses} />
       </Card>
 
       {/* Teacher Progress */}
@@ -663,6 +996,9 @@ const IntegratedLMS = () => {
           ))}
         </div>
       </div>
+
+      {/* Add Course Modal */}
+      {showAddCourseModal && <AddCourseModal />}
     </main>
   );
 };
@@ -761,5 +1097,34 @@ const CourseCard = ({ course, showProgress, showStartDate, showCompletionDate })
     </div>
   </Card>
 );
+
+// Helper Components
+const FormField = ({ children }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    {children}
+  </div>
+);
+
+const FormLabel = ({ children }) => (
+  <label style={{
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#374151'
+  }}>
+    {children}
+  </label>
+);
+
+// Shared Styles
+const formInputStyle = {
+  width: '100%',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  border: '1px solid #e5e7eb',
+  fontSize: '14px',
+  color: '#111827',
+  backgroundColor: 'white',
+  outline: 'none'
+};
 
 export default IntegratedLMS;
