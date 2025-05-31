@@ -215,7 +215,7 @@ const Login = () => {
         </form>
 
         {/* Demo Credentials */}
-        <div style={{
+{/*         <div style={{
           marginTop: '2rem',
           padding: '1rem',
           backgroundColor: '#F7FAFC',
@@ -223,21 +223,21 @@ const Login = () => {
           fontSize: '0.8125rem',
           color: '#718096',
           textAlign: 'center'
-        }}>
-          <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Demo Credentials</div>
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <div>
+        }}> */}
+{/*           <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Demo Credentials</div> */}
+{/*           <div style={{ display: 'flex', justifyContent: 'space-around' }}> */}
+{/*             <div>
               <div style={{ fontSize: '0.75rem', color: '#4A5568', fontWeight: '600' }}>Admin Login</div>
               <div>Username: Admin</div>
               <div>Password: Admin@123</div>
-            </div>
-            <div>
+            </div> */}
+{/*             <div>
               <div style={{ fontSize: '0.75rem', color: '#4A5568', fontWeight: '600' }}>Teacher Login</div>
               <div>Username: Teacher</div>
               <div>Password: Teacher@123</div>
-            </div>
-          </div>
-        </div>
+            </div> */}
+{/*           </div> */}
+{/*         </div> */}
       </div>
     </div>
   );
